@@ -1,0 +1,277 @@
+\documentclass[10pt,a4paper,titlepage,oneside]{article}
+\usepackage{LabProtocol}
+
+\exercise{Exercise I}
+
+% enter your data here
+\authors{
+	Vorname Nachname, Matr. Nr. 0123456 \par
+	{\small e0123456@student.tuwien.ac.at} \par
+}
+
+
+\begin{document}
+
+\maketitle
+
+
+%████████╗ █████╗ ███████╗██╗  ██╗     ██╗
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ███║
+%   ██║   ███████║███████╗█████╔╝     ╚██║
+%   ██║   ██╔══██║╚════██║██╔═██╗      ██║
+%   ██║   ██║  ██║███████║██║  ██╗     ██║
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═╝
+\Task{Structural modeling}
+
+\begin{qa}{Create a screenshot showing the top level design in the RTL netlist viewer!}
+	\begin{figure}[h!]
+		\centering
+		% \includegraphics[width=1.0\linewidth]{your filename here}
+		\dummyimage
+		\caption{RTL netlist viewer screenshot}
+	\end{figure}
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%████████╗ █████╗ ███████╗██╗  ██╗    ██████╗ 
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ╚════██╗
+%   ██║   ███████║███████╗█████╔╝      █████╔╝
+%   ██║   ██╔══██║╚════██║██╔═██╗     ██╔═══╝ 
+%   ██║   ██║  ██║███████║██║  ██╗    ███████╗
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝
+\Task{Seven Segment Display I}
+
+\begin{qa}{Are the \textsf{hex*} signals high or low-active? Explain what that means!}
+put your answer here ...
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%████████╗ █████╗ ███████╗██╗  ██╗    ██████╗ 
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ╚════██╗
+%   ██║   ███████║███████╗█████╔╝      █████╔╝
+%   ██║   ██╔══██║╚════██║██╔═██╗      ╚═══██╗
+%   ██║   ██║  ██║███████║██║  ██╗    ██████╔╝
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚═════╝ 
+\Task{Behavioral Simulation}
+
+\begin{qa}{SRAM write access}
+
+\begin{center}
+\begin{tabular}{lc}
+	\hline
+	Question & Answer \\
+	\hline\hline
+	Absoulte (simulation) time of the first write access$^{*}$ & ?? ns \\
+	Accessed SRAM addresses (first 4 write operations)         & 0x??, 0x??, 0x??, 0x?? \\
+	Measure the SRAM timing parameter $t_{WC}$ (see datasheet) & ?? ns\\\hline
+\end{tabular}
+
+\footnotesize{$^{*}$ Take the point in time where the address for the write operation is applied.}
+\end{center}
+
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Simulation showing the first 4 write operations to the SRAM with markers indicating the SRAM timing parameter $t_{WC}$}
+\end{figure}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{qa}{Serial port interface of the LCD driver IC (Consult the LCD manual to answer the following questions)}
+
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Screenshot showing the data transmission on the serial port interface of the LCD driver IC with markers indicating the period of the $sclk$ signal.}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{lc}
+	\hline
+	Question                                               & Answer \\\hline\hline
+	What frequency did you measure for the $sclk$ signal?  & ?? MHz \\
+	What is the maximum allowed frequency?                 & ?? MHz \\\hline
+\end{tabular}
+\end{center}
+
+Hint: Should your simulation show ``zero-width spikes'' on some signal traces, you can simply ignore them.
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{qa}{What is the purpose of the transmission on the serial interface to the LCD? Explain what is transmitted and why!}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%████████╗ █████╗ ███████╗██╗  ██╗    ██╗  ██╗
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██║  ██║
+%   ██║   ███████║███████╗█████╔╝     ███████║
+%   ██║   ██╔══██║╚════██║██╔═██╗     ╚════██║
+%   ██║   ██║  ██║███████║██║  ██╗         ██║
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝         ╚═╝
+\Task{Postlayout Simulation}
+\begin{qa}{Use a postlayout simualtion to measure the different delays on the \textsf{hex\{7-8\}} signals.}
+
+\begin{center}
+\begin{tabular}{lc}
+	\hline
+	Interval                                                  & Time \\ \hline\hline
+	Duration between the first and the last bit toggling      &  ?? \\
+	Time between the last active clock edge and stabilization &  ?? \\\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Screenshot showing the interval measurements with markers}
+\end{figure}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%████████╗ █████╗ ███████╗██╗  ██╗    ███████╗
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██╔════╝
+%   ██║   ███████║███████╗█████╔╝     ███████╗
+%   ██║   ██╔══██║╚════██║██╔═██╗     ╚════██║
+%   ██║   ██║  ██║███████║██║  ██╗    ███████║
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝
+\Task{Testbench Design}
+
+\begin{qa}{PRNG simulation}
+
+\begin{center}
+\begin{tabular}{ll}
+\hline\hline
+My matriculation number             & ?? \\
+My matriculation number modulo $15$ & ?? \\
+$n_a$                               & ?? \\
+$n_b$                               & ?? \\
+Minimum period                      & ?? \\
+Maximum period                      & ?? \\\hline
+\end{tabular}
+\end{center}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{qa}{Bonus Task: SRAM reads}
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Simulation showing a read operation performed by the \textsf{lcd\_graphics\_controller}}
+\end{figure}
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%████████╗ █████╗ ███████╗██╗  ██╗     ██████╗ 
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ██╔════╝ 
+%   ██║   ███████║███████╗█████╔╝     ███████╗ 
+%   ██║   ██╔══██║╚════██║██╔═██╗     ██╔═══██╗
+%   ██║   ██║  ██║███████║██║  ██╗    ╚██████╔╝
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝     ╚═════╝ 
+\Task{N64 Controller}
+
+\begin{qa}{Simulation of two complete button state transmission frames}
+
+\begin{center}
+\begin{tabular}{ll}
+\hline\hline
+My matriculation number                   &  ?? \\
+My matriculation number modulo $2^{16}$   & 0x?? \\
+$b_0$: hex, ({A},{B},{Select},{Start},{$\uparrow$},{$\downarrow$},{$\leftarrow$},{$\rightarrow$})  & 0x??, (?,?,?,?,?,?,?,?) \\
+$b_1$: hex, ({A},{B},{Select},{Start},{$\uparrow$},{$\downarrow$},{$\leftarrow$},{$\rightarrow$})  & 0x??, (?,?,?,?,?,?,?,?) \\\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h!]
+	\centering
+	\dummyimage
+	%\includegraphics[width=1.0\linewidth]{path}
+	\caption{Screenshot(s) showing the both transmissions with markers shing the clock period of $nes\_clk$}
+\end{figure}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{qa}{Analyse the resource usage of your \textsf{nes\_controller}!}
+\centering
+\begin{tabular}{l|ll}
+	\hline
+		                   & LC Combinationals & LC Registers        \\ \hline\hline 
+	Absolute number            &                   &                     \\
+	\% of whole design         &                   &                     \\ 
+	\% of whole FPGA resources &                   &                     \\ \hline
+\end{tabular}
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%████████╗ █████╗ ███████╗██╗  ██╗    ███████╗
+%╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ╚════██║
+%   ██║   ███████║███████╗█████╔╝         ██╔╝
+%   ██║   ██╔══██║╚════██║██╔═██╗        ██╔╝ 
+%   ██║   ██║  ██║███████║██║  ██╗       ██║  
+%   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝       ╚═╝  
+\Task{Seven Segment Display II}
+
+\begin{qa}{Include the state graph of the state machine you designed and briefly explain how it works.}
+
+You can use \texttt{dia} to draw the diagram. The provided makefile automatically converts dia files to PDFs and places them in the \texttt{dia/pdf} directory.
+However, any other method for drawing pictures is also fine. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\linewidth]{dia/pdf/example_fsm.pdf}
+	\caption{FSM state graph}
+\end{figure}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{qa}{Seven Segment Display Simulation Screenshot}
+
+\begin{center}
+\begin{tabular}{ll}
+\hline\hline
+My matriculation number                          & ?? \\ 
+My matriculation number modulo $500$             & ?? \\ 
+\textsf{player\_points} value for the testbench  & ?? \\ \hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Simulation showing the conversion}
+\end{figure}
+
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{qa}{Bonus Task: Animation Simulation}
+\begin{figure}[h!]
+	\centering
+	%\includegraphics[width=1.0\linewidth]{path}
+	\dummyimage
+	\caption{Simulation showing all animation steps}
+\end{figure}
+\end{qa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
