@@ -327,6 +327,12 @@ following line to the config file:
 
 identity: PATH_TO_YOUR_IDENTITY_FILE 
 
+The config file may also contain an (optional) entry named 'stream_cmd' to
+precisely specifiy the command that should be used to open the streams. The 
+command is: 
+  ffplay -fflags nobuffer -flags low_delay -framedrop -hide_banner \\
+         -loglevel error -autoexit
+
 Usage:
   rpa_shell.py [-c HOST -p SOF -u USER -i ID -d] [-a | -s STREAM] [-n | <CMD>]
   rpa_shell.py [-u USER -i ID -t]
@@ -345,17 +351,30 @@ Options:
   -u USER        The username for the SSH connection. If omitted the username 
                  must be contained in the rpa_cfg.yml config file.
   -i ID          The identity file to use for the SSH connection.
-  -d             Video stream debug mode (don't redirect ffplay's output to 
-                 /dev/null) 
+  -d             Video stream debug mode (don't redirect the stream player's
+                 output to /dev/null) 
 """
 
-def open_stream(url, dbg):
-	stream_cmd = "ffplay -fflags nobuffer -flags low_delay -framedrop -hide_banner -loglevel error -autoexit "
-	stream_cmd += url
-	if (dbg == False):
-		stream_cmd += " 2>/dev/null 1>/dev/null "
-	stream_cmd += "&"
-	os.system(stream_cmd)
+stream_debug = False
+default_stream_cmd = "ffplay -fflags nobuffer -flags low_delay -framedrop -hide_banner -loglevel error -autoexit"
+stream_cmd = default_stream_cmd
+
+def cfg_streaming(dbg, cmd=None):
+	global stream_ffplay, stream_debug, stream_cmd
+	stream_debug = dbg
+
+	if(cmd != None):
+		stream_cmd = cmd
+	stream_ffplay = stream_cmd
+
+def open_stream(url):
+	global stream_ffplay, stream_debug, stream_cmd
+	cmd = stream_cmd
+	cmd += " " + url
+	if (stream_debug == False):
+		cmd += " 2>/dev/null 1>/dev/null "
+	cmd += "&"
+	os.system(cmd)
 
 
 rpa_server = "ssh.tilab.tuwien.ac.at"
@@ -383,7 +402,7 @@ def signal_handler(sig, frame):
 	sys.exit(0)
 
 def load_cfg(path):
-	cfg = {"username": None, "identity": None}
+	cfg = {"username": None, "identity": None, "stream_cmd":None}
 	try:
 		with open(path, "r") as f:
 			cfg.update(yaml.load(f.read(), Loader=yaml.SafeLoader))
@@ -392,7 +411,7 @@ def load_cfg(path):
 	return cfg
 
 
-def interactive_ui(connection, debug_stream):
+def interactive_ui(connection):
 	action = None
 
 	stream_msgs = []
@@ -449,7 +468,7 @@ STREAMS
 			stream_name = stream_key_map[action]
 			url = connection.Streams[stream_name]
 			print("opening stream " + stream_name + ": " + url)
-			open_stream(url, debug_stream)
+			open_stream(url)
 		
 		#if(action == "")
 
@@ -459,11 +478,12 @@ lock = None
 
 def main():
 	global is_master_process, client, lock
-	options = docopt(usage_msg, version="1.0")
+	options = docopt(usage_msg, version="1.1")
 	#print(options)
-	debug_stream = options["-d"]
 	
 	cfg = load_cfg(cfg_file_name)
+	cfg_streaming(dbg=options["-d"],cmd=cfg["stream_cmd"])
+
 	if (options["-u"] != None):
 		cfg["username"] = options["-u"]
 	
@@ -477,7 +497,8 @@ def main():
 			if (response in ["y", "n"]):
 				if (response == "y"):
 					with open(cfg_file_name, "x") as f:
-						f.write("username: " + username)
+						f.write("username: " + username + "\n")
+						f.write("stream_cmd: " + default_stream_cmd)
 				break
 			print("Invalid response, type 'y' or 'n'!")
 	
@@ -542,7 +563,7 @@ def main():
 		sleep(0.5)
 		for name, url in connection.Streams.items():
 			print("opening stream " + name + ": " + url)
-			open_stream(url, debug_stream)
+			open_stream(url)
 	
 	if (options["-s"] != None):
 		name = options["-s"]
@@ -551,7 +572,7 @@ def main():
 			print(name + " does not identify a stream")
 		else:
 			print("opening stream " + name + ": " + url)
-			open_stream(url, debug_stream)
+			open_stream(url)
 	
 	if (options["<CMD>"] != None):
 		connection.RunCommand(options["<CMD>"], ssh_args="-tt")
@@ -568,7 +589,7 @@ def main():
 		connection.RunShell()
 	
 	if (options["--no-shell"] and is_master_process):
-		interactive_ui(connection, debug_stream)
+		interactive_ui(connection)
 	
 	if(is_master_process):
 		try:
