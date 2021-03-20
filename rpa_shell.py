@@ -386,6 +386,7 @@ connnection_lock_file = None
 
 
 cfg_file_name = "rpa_cfg.yml"
+cfg_file_path =  script_dir + "/" + cfg_file_name
 
 def signal_handler(sig, frame):
 	global is_master_process, client, lock
@@ -478,10 +479,10 @@ lock = None
 
 def main():
 	global is_master_process, client, lock
-	options = docopt(usage_msg, version="1.1")
+	options = docopt(usage_msg, version="1.1.1")
 	#print(options)
 	
-	cfg = load_cfg(cfg_file_name)
+	cfg = load_cfg(cfg_file_path)
 	cfg_streaming(dbg=options["-d"],cmd=cfg["stream_cmd"])
 
 	if (options["-u"] != None):
@@ -496,7 +497,7 @@ def main():
 			response = response.strip().lower()
 			if (response in ["y", "n"]):
 				if (response == "y"):
-					with open(cfg_file_name, "x") as f:
+					with open(cfg_file_path, "x") as f:
 						f.write("username: " + username + "\n")
 						f.write("stream_cmd: " + default_stream_cmd)
 				break
