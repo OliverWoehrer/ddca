@@ -6,7 +6,6 @@ use work.math_pkg.all;
 use work.nes_controller_pkg.all;
 use work.audio_cntrl_pkg.all;
 use work.object_collider_pkg.all;
-use work.object_fifo_pkg.all;
 use work.ball_game_pkg.all;
 use work.prng_pkg.all;
 use work.ram_pkg.all;
