@@ -68,6 +68,7 @@ begin
 		if (res_n = '0') then
 			pixel_x <= (others=>'0');
 			pixel_y <= (others=>'0');
+			pixel_valid <= '0';
 			running <= '0';
 			h_block_cnt <= (others=>'0');
 			v_block_cnt <= (others=>'0');
@@ -76,7 +77,9 @@ begin
 			pixel_valid <= '0';
 			
 			if (start = '1') then
-				pixel_valid <= '1';
+				if (fill = '1' or draw = '1') then
+					pixel_valid <= '1';
+				end if;
 				pixel_x <= x;
 				pixel_y <= y;
 				running <= '1';
@@ -87,7 +90,7 @@ begin
 			
 			if(running = '1' and stall = '0') then
 
-				if(unsigned(h_block_cnt) = (unsigned(bw) + unsigned(dx) - 1) ) then
+				if(unsigned(h_block_cnt) = (unsigned('0' & bw) + unsigned(dx) - 1) ) then
 					h_block_cnt <= (others=>'0');
 				else
 					h_block_cnt <= std_logic_vector(unsigned(h_block_cnt) + 1);
@@ -97,11 +100,11 @@ begin
 					h_block_cnt <= (others=>'0');
 					line_shift_tmp := to_integer(unsigned(line_shift));
 					
-					if(unsigned(v_block_cnt) = (unsigned(bh) + unsigned(dy) - 1) ) then -- v block complete
+					if(unsigned(v_block_cnt) = (unsigned('0' & bh) + unsigned(dy) - 1) ) then -- v block complete
 						v_block_cnt <= (others=>'0');
 						line_shift_tmp := line_shift_tmp - to_integer(unsigned(ls));
 						if(line_shift_tmp < 0) then
-							line_shift_tmp := line_shift_tmp + to_integer(unsigned(bw) + unsigned(dx));
+							line_shift_tmp := line_shift_tmp + to_integer(unsigned('0' & bw) + unsigned(dx));
 						end if;
 					else
 						v_block_cnt <= std_logic_vector(unsigned(v_block_cnt) + 1);
@@ -122,9 +125,17 @@ begin
 						pixel_y <= std_logic_vector(unsigned(pixel_y) + 1);
 					end if;
 				else
-					pixel_x <= std_logic_vector(unsigned(pixel_x) + 1);
+					if (fill = '1' or unsigned(pixel_y) = unsigned(y) or unsigned(pixel_y) = unsigned(y_br)) then
+						pixel_x <= std_logic_vector(unsigned(pixel_x) + 1);
+					else
+						pixel_x <= x_br; -- jump to the end of the line
+					end if;
 				end if;
 				
+				if (fill = '0' and draw = '0') then
+					pixel_valid <= '0';
+					running <= '0';
+				end if;
 			end if;
 		end if;
 	end process;
