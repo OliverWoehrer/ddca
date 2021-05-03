@@ -92,7 +92,7 @@ package body gfx_if_pkg  is
 		variable instr : std_logic_vector(7 downto 0);
 	begin
 		instr := "01100000";
-		assert (pattern_id >= 1 or pattern_id <= 6) report "pattern_id must be between 1 and 6" severity failure;
+		assert (pattern_id >= 1 and pattern_id <= 6) report "pattern_id must be between 1 and 6" severity failure;
 		instr(2 downto 0) := std_logic_vector(to_unsigned(pattern_id, 3));
 		return instr;
 	end function;
@@ -101,7 +101,7 @@ package body gfx_if_pkg  is
 		variable instr : std_logic_vector(7 downto 0);
 	begin
 		instr := "1" & OPCODE_DRAW_RECT & "00000";
-		assert (pattern_id >= 0 or pattern_id <= 7) report "pattern_id must be between 0 and 7" severity failure;
+		assert (pattern_id >= 0 and pattern_id <= 7) report "pattern_id must be between 0 and 7" severity failure;
 		instr(2 downto 0) := std_logic_vector(to_unsigned(pattern_id, 3));
 		if(draw_border) then
 			instr(3) := '1';
