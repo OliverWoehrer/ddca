@@ -141,6 +141,16 @@ Did you add an SSH key to your TILab account?\
 		cmd += [self._username+"@"+self._rpa_server]
 		return cmd
 	
+	def CopyFileToServer(self, src, dest):
+		id_arg = ""
+		if(self._identity != None):
+			id_arg = "-i " + self._identity + " "
+		scp_cmd = "scp IDARG " + src + " USERNAME@RPASERVER:" + dest
+		scp_cmd = scp_cmd.replace("IDARG", id_arg)
+		scp_cmd = scp_cmd.replace("USERNAME", self._username)
+		scp_cmd = scp_cmd.replace("RPASERVER", self._rpa_server)
+		subprocess.run(scp_cmd, shell=True)
+	
 	def ServerStatus(self):
 		try:
 			rpa_status_cmd = self._ssh_command() + ["rpa status"]
@@ -318,17 +328,17 @@ via the -u argument or using a config file named 'rpa_cfg.yml' which must be
 placed in the same directory as the rpa_shell script itself. To create this file
 simply execute rpa_shell without a username and follow the instructions.
 
-Optionally you can also specify which identity file (i.e., privat key file) the 
+Optionally you can also specify which identity file (i.e., private key file) the 
 rpa_shell tools should use to establish the SSH connection  (-i argument passed 
-to the ssh command). You can do this via the -i command line option or unsing 
-the (optional) identity entry in the config file. If you don't know what this 
+to the ssh command). You can do this via the -i command line option or using the
+(optional) identity entry in the config file. If you don't know what this 
 feature is for, you will probably not need it. To specify an identity add the
 following line to the config file:
 
 identity: PATH_TO_YOUR_IDENTITY_FILE 
 
 The config file may also contain an (optional) entry named 'stream_cmd' to
-precisely specifiy the command that should be used to open the streams. The 
+precisely specify the command that should be used to open the streams. The 
 command is: 
   ffplay -fflags nobuffer -flags low_delay -framedrop -hide_banner \\
          -loglevel error -autoexit
@@ -336,6 +346,7 @@ command is:
 Usage:
   rpa_shell.py [-c HOST -p SOF -u USER -i ID -d] [-a | -s STREAM] [-n | <CMD>]
   rpa_shell.py [-u USER -i ID -t]
+  rpa_shell.py --scp [-u USER -i ID] <LOCAL_SRC> [<REMOTE_DEST>]
   rpa_shell.py -h | -v
 
 Options:
@@ -353,6 +364,9 @@ Options:
   -i ID          The identity file to use for the SSH connection.
   -d             Video stream debug mode (don't redirect the stream player's
                  output to /dev/null) 
+  --scp          Copies the file specified by <LOCAL_SRC> to the lab, at the 
+                 location specified by <REMOTE_DEST>. If <REMOTE_DEST> is 
+                 omitted the file will be placed in your home directory.
 """
 
 stream_debug = False
@@ -510,6 +524,14 @@ def main():
 	if(options["-t"]):
 		client = RPAClient(rpa_server, username, identity=cfg["identity"])
 		print(client.ServerStatus())
+		exit(0)
+	
+	if (options["--scp"]):
+		client = RPAClient(rpa_server, username, identity=cfg["identity"])
+		dest = options["<REMOTE_DEST>"]
+		if (dest == None):
+			dest = ""
+		client.CopyFileToServer(options["<LOCAL_SRC>"], dest)
 		exit(0)
 	
 	is_master_process = False
