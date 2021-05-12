@@ -5,14 +5,14 @@ use ieee.numeric_std.all;
 package nes_controller_pkg is
 
 	type nes_buttons_t is record
-		btn_a      : std_logic;
-		btn_b      : std_logic;
-		btn_select : std_logic;
-		btn_start  : std_logic;
 		btn_up     : std_logic;
 		btn_down   : std_logic;
 		btn_left   : std_logic;
 		btn_right  : std_logic;
+		btn_a      : std_logic;
+		btn_b      : std_logic;
+		btn_start  : std_logic;
+		btn_select : std_logic;
 	end record;
 
 	constant NES_BUTTONS_RESET_VALUE : nes_buttons_t := (others=>'0');

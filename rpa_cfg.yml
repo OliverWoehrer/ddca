@@ -1,0 +1,2 @@
+username: d11907563
+stream_cmd: ffplay -fflags nobuffer -flags low_delay -framedrop -hide_banner -loglevel error -autoexit

@@ -69,7 +69,7 @@ begin
 			pix_y <= 0;
 			vram_rd <= '0';
 			vram_addr <= (others => '0');
-			read_burst_cnt <= 0; -- original 0
+			read_burst_cnt <= 0;
 			frame_start <= '0';
 			init <= '1';
 			frame_start_wait_cycle <= '0';
@@ -83,21 +83,12 @@ begin
 				init <= '0';
 			end if;
 			
-			
-			
---			if (read_burst_cnt /= 0 or half_full = '0') and init = '0' and not (frame_start = '1' or frame_start_wait_cycle = '1') then
---				if (read_burst_cnt = 0) then
---					read_burst_cnt <= OUTPUT_FIFO_DEPTH/2 - 1; 
---				else
---					read_burst_cnt <= read_burst_cnt - 1;
---				end if;
 			if(half_full = '0') then
 				read_burst_cnt <= OUTPUT_FIFO_DEPTH/2;
 			end if;
 			
-			if read_burst_cnt /= 0 and init = '0' and not (frame_start = '1' or frame_start_wait_cycle = '1') then
+			if (read_burst_cnt /= 0 and init = '0' and not (frame_start = '1' or frame_start_wait_cycle = '1') ) then
 				read_burst_cnt <= read_burst_cnt - 1;
-				
 				vram_addr <= std_logic_vector(unsigned(vram_base_addr) + to_unsigned(pix_x + WIDTH*pix_y, VRAM_ADDR_WIDTH));
 				vram_rd <= '1';
 				

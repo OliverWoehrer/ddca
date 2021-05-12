@@ -4,13 +4,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 -- import all required packages
-use work.dbg_port_pkg.all;
 use work.display_switch_pkg.all;
-use work.nes_controller_pkg.all;
-use work.lcd_graphics_controller_pkg.all;
-use work.vbs_graphics_controller_pkg.all;
-use work.audio_cntrl_pkg.all;
-use work.ball_game_pkg.all;
+use work.dbg_port_pkg.all;
 
 
 entity top is
@@ -100,14 +95,6 @@ end entity;
 
 architecture arch of top is
 
-	signal display_clk : std_logic;
-	signal audio_clk : std_logic;
-	
-	signal res_n : std_logic;
-	signal audio_res_n : std_logic;
-	signal display_res_n : std_logic;
-	signal data_in : std_logic;
-
 	signal dbg_switches : std_logic_vector(17 downto 0);
 	signal dbg_keys : std_logic_vector(3 downto 0);
 
@@ -156,24 +143,7 @@ architecture arch of top is
 	signal vbs_gfx_data_full : std_logic;
 	signal vbs_gfx_frame_sync : std_logic;
 	
-	signal nes_buttons : nes_buttons_t;
-	
-	signal synth_cntrl_s : synth_cntrl_vec_t(0 to 1);	
-	signal game_state_s : ball_game_state_t;
-	signal player_points_s : std_logic_vector(15 downto 0);
-	
-	constant SYNC_STAGES : natural := 2;
-	constant WIDTH : natural := 400;
-	constant HEIGHT : natural := 240;
-	
-	-- PLL component declaration here, not in package
-	component pll
-	port (
-		inclk0		: IN STD_LOGIC  := '0';
-		c0		: OUT STD_LOGIC ;
-		c1		: OUT STD_LOGIC 
-	);
-	end component;
+	signal dbg_nes_buttons : nes_buttons_t;
 
 begin
 	-- these outputs are connected the channels 2, 3 and 4 on the remote hosts
@@ -182,8 +152,19 @@ begin
 	osci_ch2 <= '0';
 	osci_ch3 <= '0';
 	osci_ch4 <= '0';
+
+	dbg_ledr <= ledr;
+	dbg_ledg <= ledg;
 	
-	--Debug Ports:
+	dbg_hex0 <= hex0;
+	dbg_hex1 <= hex1;
+	dbg_hex2 <= hex2;
+	dbg_hex3 <= hex3;
+	dbg_hex4 <= hex4;
+	dbg_hex5 <= hex5;
+	dbg_hex6 <= hex6;
+	dbg_hex7 <= hex7;
+	
 	dbg_port_inst : dbg_port
 	port map (
 		clk                 => clk,
@@ -200,7 +181,7 @@ begin
 		gfx_data            => dbg_gfx_data,
 		gfx_data_wr         => dbg_gfx_data_wr,
 		gfx_data_full       => dbg_gfx_data_full,
-		nes_buttons         => open, --replaced with button_state in nes_controller_inst
+		nes_buttons         => dbg_nes_buttons,
 		nes_clk             => emulated_nes_clk,
 		nes_data            => emulated_nes_data,
 		nes_latch           => emulated_nes_latch,
@@ -215,19 +196,6 @@ begin
 		hex7 => dbg_hex7
 	);
 	
-	--Debug Pin Connections:
-	dbg_ledr <= ledr;
-	dbg_ledg <= ledg;
-	dbg_hex0 <= hex0;
-	dbg_hex1 <= hex1;
-	dbg_hex2 <= hex2;
-	dbg_hex3 <= hex3;
-	dbg_hex4 <= hex4;
-	dbg_hex5 <= hex5;
-	dbg_hex6 <= hex6;
-	dbg_hex7 <= hex7;
-	
-	--Display Switch Logic:
 	display_switch_inst : display_switch
 	port map (
 		control              => dsc,
@@ -263,201 +231,5 @@ begin
 
 
 	-- add your instances here
-	
-	pll_inst : pll
-	port map (
-		inclk0	=> clk,
-		c0			=> display_clk,
-		c1			=> audio_clk
-	);
-	
-	--NES Controller Instance:
-	nes_controller_inst : entity work.nes_controller(arch)
-	generic map (
-		50000000,
-		1000000,
-		400000 --tested with 200, actually 400000
-	)
-	port map (
-		clk 				=> clk,
-		res_n				=> res_n,
-		nes_clk			=> nes_clk,		--PIN_AH22
-		nes_latch		=> nes_latch,	--PIN_AF26
-		nes_data			=> nes_data,	--PIN_AE20
-		button_state	=> nes_buttons	--replaces dbg_nes_buttons of dbg_port_inst
-	);
-	
-	--Seven Segment Display Contoller Instance:
-	ssd_controller_inst : entity work.ssd_controller(arch)
-	generic map (
-		12500000, --BLINK_INTERVAL
-		3	 --BLINK_COUNT
-	)
-	port map (
-		clk 				=> clk,
-		res_n				=> res_n,
-		game_state		=> game_state_s,
-		player_points	=> player_points_s,
-		controller		=> nes_buttons,
-		hex0				=> hex0,
-		hex1				=> hex1,
-		hex2				=> hex2,
-		hex3				=> hex3,
-		hex4				=> hex4,
-		hex5				=> hex5,
-		hex6				=> hex6,
-		hex7				=> hex7
-	);
-	
-	--LED connections
-	ledg(0) <= nes_buttons.btn_right;
-	ledg(1) <= nes_buttons.btn_left;
-	ledg(2) <= nes_buttons.btn_down;
-	ledg(3) <= nes_buttons.btn_up;
-	ledg(4) <= nes_buttons.btn_start;
-	ledg(5) <= nes_buttons.btn_select;
-	ledg(6) <= nes_buttons.btn_b;
-	ledg(7) <= nes_buttons.btn_a;
-	ledg(8) <= '0';
-	ledr <= dbg_switches;
-	
-	
-	--LCD Controller Instance:
-	lcd_graphics_controller_inst : lcd_graphics_controller
-	port map (
-		clk				=> clk,
-		res_n				=> res_n,
-		display_clk		=> display_clk,
-		display_res_n	=> display_res_n,
-		
-		gfx_instr		=> lcd_gfx_instr,
-		gfx_instr_wr	=> lcd_gfx_instr_wr,
-		gfx_data			=> lcd_gfx_data,
-		gfx_data_wr		=> lcd_gfx_data_wr,
-		
-		nclk				=> nclk,
-		grest				=> grest,
-		vd					=> vd,
-		hd					=> hd,
-		den				=> den,
-		r					=> r,
-		g					=> g,
-		b					=> b,
-		sclk				=> sclk,
-		sda				=> sda,
-		scen				=> scen,
-		sram_addr		=> sram_addr,
-		sram_ub_n		=> sram_ub_n,
-		sram_lb_n		=> sram_lb_n,
-		sram_we_n		=> sram_we_n,
-		sram_ce_n		=> sram_ce_n,
-		sram_oe_n		=> sram_oe_n,
-		sram_dq			=> sram_dq,
-		
-		gfx_instr_full	=> lcd_gfx_instr_full,
-		gfx_data_full	=> lcd_gfx_data_full,
-		gfx_frame_sync	=> lcd_gfx_frame_sync
-	);
-	
-	--LCD Controller Reset Logic:
-	display_reset_sync : entity work.sync(beh)
-	generic map (
-		SYNC_STAGES => SYNC_STAGES,
-		RESET_VALUE	=> '1'
-	)
-	port map (
-		clk		=> display_clk,
-		res_n		=> '1',
-		data_in	=> data_in,
-		data_out	=> display_res_n
-	);
-	
-	--VBS Controller Instance:
-	vbs_graphics_controller_inst: vbs_graphics_controller
-	generic map (
-		CLK_FREQ => 50_000_000
-	)
-	port map (
-		clk					=> clk,
-		res_n					=> res_n,
-		gfx_instr			=> vbs_gfx_instr,
-		gfx_instr_wr		=> vbs_gfx_instr_wr,
-		gfx_instr_full		=> vbs_gfx_instr_full,
-		gfx_data				=> vbs_gfx_data,
-		gfx_data_wr			=> vbs_gfx_data_wr,
-		gfx_data_full		=> vbs_gfx_data_full,
-		gfx_frame_sync		=> vbs_gfx_frame_sync,
-		vga_r					=> vga_r,
-		vga_g					=> vga_g,
-		vga_b					=> vga_b,
-		vga_clk				=> vga_clk,
-		vga_sync_n			=> vga_sync_n,
-		vga_blank_n			=> vga_blank_n
-	);
-	
-	--Audio Controller Instance:
-	audio_cntrl_inst : entity work.audio_cntrl_2s(arch)
-	port map (
-		clk				=> audio_clk,
-		res_n				=> audio_res_n,
-		synth_cntrl		=> synth_cntrl_s,
-		wm8731_xck		=> wm8731_xck,
-		wm8731_dacdat	=> wm8731_dacdat,
-		wm8731_daclrck	=> wm8731_daclrck,
-		wm8731_bclk		=> wm8731_bclk,
-		wm8731_sclk		=> wm8731_sclk,
-		wm8731_sdat		=> wm8731_sdat
-	);
-	
-	--Audio Controller Reset Logic:
-	audio_reset_sync : entity work.sync(beh)
-	generic map (
-		SYNC_STAGES => SYNC_STAGES,
-		RESET_VALUE	=> '1'
-	)
-	port map (
-		clk		=> audio_clk,
-		res_n		=> '1',
-		data_in	=> data_in,
-		data_out	=> audio_res_n
-	);
-	
-	--Ball Game Instance:
-	ball_game_inst : entity work.ball_game
-	generic map (
-		DISPLAY_WIDTH	=> WIDTH,
-		DISPLAY_HEIGHT => HEIGHT
-	)
-	port map (
-		clk				=> clk,
-		res_n				=> res_n,
-		gfx_instr_full	=> game_gfx_instr_full,
-		gfx_data_full	=> game_gfx_data_full,
-		gfx_frame_sync	=> game_gfx_frame_sync,
-		controller		=> nes_buttons,
-		gfx_instr		=> game_gfx_instr,
-		gfx_instr_wr	=> game_gfx_instr_wr,
-		gfx_data			=> game_gfx_data,
-		gfx_data_wr		=> game_gfx_data_wr,
-		game_state 		=> game_state_s,
-		player_points 	=> player_points_s,
-		synth_cntrl 	=> synth_cntrl_s
-	);
-	
-	--Reset Logic:	
-	reset_sync : entity work.sync(beh)
-	generic map (
-		SYNC_STAGES => SYNC_STAGES,
-		RESET_VALUE	=> '1'
-	)
-	port map (
-		clk		=> clk,
-		res_n		=> '1',
-		data_in	=> data_in,
-		data_out	=> res_n
-	);
-	
-	--Combine Reset:
-	data_in <= keys(0) and dbg_keys(0);
 
 end architecture;
