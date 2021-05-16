@@ -7,6 +7,7 @@ clean:
 	rm -f transcript
 	rm -f *.wlf
 	rm -f modelsim.ini
+	rm -f log
 
 compile:
 	@vsim -c -do "do scripts/compile.do;quit -f"
