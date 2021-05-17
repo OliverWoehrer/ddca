@@ -7,12 +7,22 @@ clean:
 	rm -f transcript
 	rm -f *.wlf
 	rm -f modelsim.ini
+	rm -f log
+	rm -f *.bak
 
 compile:
 	@vsim -c -do "do scripts/compile.do;quit -f"
+	@echo "--------------------------------------------------------------"
+	@echo "--              Error and Warning Summary                   --"
+	@echo "--------------------------------------------------------------"
+	@cat log | grep 'Warning\|Error'
+	@if [ $$(grep "Error:" -m 1 log) ]; then \
+		echo "Compilation had errors!" \
+		exit 1; \
+	fi;
 
-sim:
+sim: compile
 	@vsim -c -t ps work.tb -quiet -do "run -all;quit -f" | grep -E "\*\*|Errors"
 
-sim_gui:
+sim_gui: compile
 	@vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full"

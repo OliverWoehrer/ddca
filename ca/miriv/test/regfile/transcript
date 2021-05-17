@@ -1,0 +1,8 @@
+# vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full" 
+# Start time: 16:43:52 on May 17,2021
+# do scripts/wave.do
+# run -all
+# wave zoom full
+# {0 ps} {357 ns}
+# End time: 16:44:14 on May 17,2021, Elapsed time: 0:00:22
+# Errors: 0, Warnings: 0

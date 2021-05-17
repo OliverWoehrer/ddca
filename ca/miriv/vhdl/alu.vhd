@@ -1,3 +1,11 @@
+/*
+[alu.vhd] ARITHMETIC LOGICAL UNIT:
+This unit is the ALU of the RISC-V processor. It handles the most basic ALU instructions
+and is implemented as a MUX, selected via the op-signal. It operates asynchronously.
+*/
+----------------------------------------------------------------------------------
+--                                LIBRARIES                                     --
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -6,8 +14,10 @@ use work.mem_pkg.all;
 use work.core_pkg.all;
 use work.op_pkg.all;
 
--- ATTENTION: zero flag is only valid on SUB and SLT(U)
 
+--------------------------------------------------------------------------------
+--                                 ENTITY                                     --
+--------------------------------------------------------------------------------
 entity alu is
 	port (
 		op   : in  alu_op_type;
@@ -17,11 +27,14 @@ entity alu is
 	);
 end alu;
 
+--------------------------------------------------------------------------------
+--                               ARCHITECTURE                                 --
+--------------------------------------------------------------------------------
 architecture rtl of alu is
 begin
 	--Arithmetic Logic:
 	alu_logic: process(op,A,B)
-	begin
+	begin -- ATTENTION: zero flag is only valid on SUB and SLT(U)
 		case op is
 			when ALU_NOP =>
 				R <= B;
