@@ -1,7 +1,7 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /tb_cpu/dut/pipeline_inst/clk
-add wave -noupdate /tb_cpu/dut/pipeline_inst/reset
+add wave -noupdate /tb_cpu/dut/pipeline_inst/res_n
 add wave -noupdate -divider -height 40 fetch
 add wave -noupdate -group fetch /tb_cpu/dut/pipeline_inst/fetch_inst/stall
 add wave -noupdate -group fetch /tb_cpu/dut/pipeline_inst/fetch_inst/flush
