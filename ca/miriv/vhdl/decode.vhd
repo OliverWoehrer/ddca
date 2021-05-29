@@ -245,6 +245,7 @@ begin
 				exec_op.imm <= imm_from_inst_format_J(instr_s);
 				exec_op.aluop <= ALU_ADD;
 				mem_op.branch <= BR_BR;
+				exec_op.alusrc1 <= '1';
 				exec_op.alusrc3 <= '1';
 				wb_op.write <= '1';
 				wb_op.src <= WBS_OPC;
