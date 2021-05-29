@@ -59,7 +59,10 @@ architecture rtl of mem is
 	signal zero_s       : std_logic;
 
 begin
-
+	wbop_out			<= wbop_s;
+	pc_old_out		<= pc_old_s;
+	aluresult_out	<= aluresult_s;
+	
 	reg : process 
 	begin
 		wait until rising_edge(clk);
@@ -92,12 +95,26 @@ begin
 	begin
 		case mem_op_s.branch is
 			when BR_BR =>
+				pcsrc <= '1';
 				pc_new_out <= aluresult_in(15 downto 1) & '0';
-			when BR_CND => 
-				pc_new_out <= pc_new_s when zero_s = '1' else pc_old_s;
+			when BR_CND =>
+				if zero_s = '1' then
+					pcsrc <= '1';
+					pc_new_out <= pc_new_s;
+				else
+					pcsrc <= '0';
+					pc_new_out <= pc_old_s;
+				end if
 			when BR_CNDI => 
-				pc_new_out <= pc_new_s when zero_s = '0' else pc_old_s;
+				if zero_s = '0' then
+					pcsrc <= '1';
+					pc_new_out <= pc_new_s;
+				else
+					pcsrc <= '0';
+					pc_new_out <= pc_old_s;
+				end if
 			when others => 					--BR_NOP
+				pcsrc <= '0';
 				pc_new_out <= pc_old_s;
 			end case;
 	end process branch;
