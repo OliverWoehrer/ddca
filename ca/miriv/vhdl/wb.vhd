@@ -24,7 +24,7 @@ entity wb is
 end entity;
 
 architecture rtl of wb is
-	signal op_s				: data_type;
+	signal op_s				: wb_op_type;
 	signal aluresult_s	: data_type;
 	signal memresult_s	: data_type;
 	signal pc_old_s		: pc_type;
@@ -37,11 +37,11 @@ begin
 		when WBS_MEM =>
 			reg_write.data <= memresult_s;
 		when WBS_OPC =>
-			reg_write.data <= pc_old_s;
+			reg_write.data <= to_data_type(pc_old_s);
 		when others => 							--WBS_ALU
 			reg_write.data <= aluresult_s;
 		end case;
-	end process
+	end process;
 
 	reg : process 
 	begin
