@@ -239,6 +239,7 @@ begin
 					--format J
 					exec_op.imm <= imm_from_inst_format_J(instr_s);
 					exec_op.aluop <= ALU_ADD;
+					mem_op.branch <= BR_BR;
 					exec_op.alusrc3 <= '1';
 					wb_op.write <= '1';
 					wb_op.src <= WBS_OPC;
@@ -247,6 +248,7 @@ begin
 					--format I
 					exec_op.imm <= imm_from_inst_format_I(instr_s);
 					exec_op.aluop <= ALU_ADD; --funct3 = "000"
+					mem_op.branch <= BR_BR;
 					exec_op.alusrc2 <= '1';
 					exec_op.alusrc3 <= '1';
 					wb_op.write <= '1';

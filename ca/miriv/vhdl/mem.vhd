@@ -49,5 +49,72 @@ entity mem is
 end entity;
 
 architecture rtl of mem is
+
+	signal mem_op_s     : mem_op_type; 			--branch, mem(memread, memwrite, memtype)
+	signal wbop_s       : wb_op_type;			--rd, write, src
+	signal pc_new_s     : pc_type;
+	signal pc_old_s     : pc_type;
+	signal aluresult_s  : data_type;
+	signal wrdata_s     : data_type;
+	signal zero_s       : std_logic;
+
 begin
+
+	reg : process 
+	begin
+		wait until rising_edge(clk);
+		if res_n = '0' then
+			mem_op_s 	<= MEM_NOP;
+			wbop_s		<= WB_NOP;
+			pc_new_s 	<= (others => '0');
+			pc_old_s		<= (others => '0');
+			aluresult_s <= (others => '0');
+			wrdata_s		<= (others => '0');
+			zero_s		<= '0';
+		elsif flush = '1' then
+			mem_op_s 	<= MEM_NOP;
+			wbop_s		<= WB_NOP;
+		elsif stall = '0' then
+			mem_op_s 	<= mem_op;
+			wbop_s		<= wbop_in;
+			pc_new_s		<= pc_new_in;
+			pc_old_s		<= pc_old_in;
+			aluresult_s	<= aluresult_in;
+			wrdata_s		<= wrdata;
+			zero_s		<= zero;
+		else
+			mem_op_s.mem.memread <= '0';
+			mem_op_s.mem.memwrite <= '0';
+		end if;
+	end process reg;
+	
+	branch : process(all)
+	begin
+		case mem_op_s.branch is
+			when BR_BR =>
+				pc_new_out <= aluresult_in(15 downto 1) & '0';
+			when BR_CND => 
+				pc_new_out <= pc_new_s when zero_s = '1' else pc_old_s;
+			when BR_CNDI => 
+				pc_new_out <= pc_new_s when zero_s = '0' else pc_old_s;
+			when others => 					--BR_NOP
+				pc_new_out <= pc_old_s;
+			end case;
+	end process branch;
+	
+
+	memu_inst : entity work.memu
+	port map(
+		op => mem_op_s.mem,
+		A => aluresult_s,
+		W => wrdata_s,
+		R => memresult,
+
+		B => mem_busy,
+		XL => exc_load,
+		XS => exc_store,
+
+		D => mem_in,
+		M => mem_out
+	);
 end architecture;
