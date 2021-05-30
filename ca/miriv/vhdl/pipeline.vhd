@@ -68,7 +68,7 @@ begin
 		res_n     => res_n,
 		stall     => stall_s,
 		flush     => '0',
-		mem_busy  => mem_busy_s,
+		mem_busy  => mem_busy_from_fetch_s,
 		
 		-- from mem
 		pcsrc     => pcsrc_from_mem_s,
@@ -101,7 +101,7 @@ begin
 		pc_out     => pc_from_decode_s,			
 		exec_op    => exec_op_from_decode_s,					
 		mem_op     => mem_op_from_decode_s,					
-		wb_op      => wb_op_from_decode_s					
+		wb_op      => wb_op_from_decode_s,					
 
 		-- exceptions
 		exc_dec    => open
@@ -133,7 +133,7 @@ begin
 		-- FWD
 		exec_op       => open,
 		reg_write_mem => reg_write_from_mem_s,
-		reg_write_wr  => (others => '0');
+		reg_write_wr  => REG_NOP
 	);
 	
 	memory_stage_inst : entity work.mem

@@ -59,6 +59,7 @@ architecture rtl of mem is
 	signal zero_s       : std_logic;
 
 begin
+	reg_write		<= REG_NOP;
 	wbop_out			<= wbop_s;
 	pc_old_out		<= pc_old_s;
 	aluresult_out	<= aluresult_s;
@@ -104,7 +105,7 @@ begin
 				else
 					pcsrc <= '0';
 					pc_new_out <= pc_old_s;
-				end if
+				end if;
 			when BR_CNDI => 
 				if zero_s = '0' then
 					pcsrc <= '1';
@@ -112,15 +113,15 @@ begin
 				else
 					pcsrc <= '0';
 					pc_new_out <= pc_old_s;
-				end if
+				end if;
 			when others => 					--BR_NOP
 				pcsrc <= '0';
 				pc_new_out <= pc_old_s;
-			end case;
+		end case;
 	end process branch;
 	
 
-	memu_inst : entity work.memu
+	memu_inst : entity work.memu(rtl)
 	port map(
 		op => mem_op_s.mem,
 		A => aluresult_s,

@@ -108,5 +108,11 @@ package op_pkg is
 		reg      : reg_adr_type;
 		data     : data_type;
 	end record;
+	
+	constant REG_NOP : reg_write_type := (
+		'0',  				-- write
+		ZERO_REG,       	-- reg
+		(others => '0')   -- data
+	);
 
 end package;

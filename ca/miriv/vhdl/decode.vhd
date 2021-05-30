@@ -150,16 +150,16 @@ architecture rtl of decode is
 	function alu_op_for_OP(funct3 : std_logic_vector; funct7 : std_logic_vector) return alu_op_type is
 	begin
 		case funct3 & funct7 is
-		when "000" & "00000000" => return ALU_ADD;
-		when "000" & "01000000" => return ALU_SUB;
-		when "001" & "00000000" => return ALU_SLL;
-		when "010" & "00000000" => return ALU_SLT;
-		when "011" & "00000000" => return ALU_SLTU;
-		when "100" & "00000000" => return ALU_XOR;
-		when "101" & "00000000" => return ALU_SRL;
-		when "101" & "01000000" => return ALU_SRA;
-		when "110" & "00000000" => return ALU_OR;
-		when "111" & "00000000" => return ALU_AND;
+		when "000" & "0000000" => return ALU_ADD;
+		when "000" & "0100000" => return ALU_SUB;
+		when "001" & "0000000" => return ALU_SLL;
+		when "010" & "0000000" => return ALU_SLT;
+		when "011" & "0000000" => return ALU_SLTU;
+		when "100" & "0000000" => return ALU_XOR;
+		when "101" & "0000000" => return ALU_SRL;
+		when "101" & "0100000" => return ALU_SRA;
+		when "110" & "0000000" => return ALU_OR;
+		when "111" & "0000000" => return ALU_AND;
 		when others => 
 		end case;
 		return ALU_NOP;
@@ -178,6 +178,7 @@ architecture rtl of decode is
 	end function;
 	
 begin
+	
 	opcode	<= instr_s(6 downto 0);
 	funct7 	<= instr_s(31 downto 25);
 	funct3 	<= instr_s(14 downto 12);
@@ -191,8 +192,8 @@ begin
 		clk			=> clk,              
 		res_n       => res_n,
 		stall  		=> stall,          
-		rdaddr1		=> exec_op.rs1,
-		rdaddr2 		=> exec_op.rs2,
+		rdaddr1		=> instr_s(19 downto 15),
+		rdaddr2 		=> instr_s(24 downto 20),
 		rddata1		=> exec_op.readdata1,
 		rddata2 		=> exec_op.readdata2,
 		wraddr		=> reg_write.reg,         
@@ -206,14 +207,12 @@ begin
 		if res_n = '0' then
 			instr_s <= (others => '0');
 			pc_s <= (others => '0');
-			opcode	<= (others => '0');
-			funct7 	<= (others => '0');
-			funct3 	<= (others => '0');
 		elsif flush = '1' then
 			instr_s(6 downto 0) <= OPC_NOP;
 		elsif stall = '0' then
 			instr_s <= instr;
 			pc_s <= pc_in;
+			
 		else
 			-- keep old register values
 		end if;
@@ -222,6 +221,14 @@ begin
 	decode_logic : process (all)
 	begin
 		exc_dec <= '0';
+		exec_op.aluop <= ALU_NOP;
+		exec_op.alusrc1 <= '0';
+		exec_op.alusrc2 <= '0';
+		exec_op.alusrc3 <= '0';
+		exec_op.imm <= (others => '0');
+		wb_op.write <= '0';
+		wb_op.src <= WBS_ALU;
+		mem_op <= MEM_NOP;
 		case opcode is
 			when OPC_LUI =>
 				--format U
@@ -264,7 +271,11 @@ begin
 				--format B
 				exec_op.imm <= imm_from_inst_format_B(instr_s);
 				exec_op.aluop <= alu_op_for_BRANCH(funct3);
-				mem_op.branch <= BR_CND when  funct3(0) = '0' else BR_CNDI;
+				if funct3(0) = '0' then
+					mem_op.branch <= BR_CND;
+				else
+					mem_op.branch <= BR_CNDI;
+				end if;
 				exec_op.alusrc3 <= '1';
 				wb_op.write <= '0';
 				wb_op.src <= WBS_ALU;
@@ -316,9 +327,6 @@ begin
 				
 			when others =>
 				exc_dec <= '1';
-				exec_op <= EXEC_NOP;
-				mem_op <= MEM_NOP;
-				wb_op <= WB_NOP;
 				
 		end case;
 	end process;
