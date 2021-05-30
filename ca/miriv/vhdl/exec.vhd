@@ -1,10 +1,22 @@
+/*
+[exec.vhd] EXECUTE INSTRUCTION:
+This unit instantiates the ALU and applies its input signals according to the
+three ALU control signals ALUsrc1, ALUsrc2 and ALUsrc3.
+*/
+----------------------------------------------------------------------------------
+--                                LIBRARIES                                     --
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 use work.core_pkg.all;
 use work.op_pkg.all;
+use work.mem_pkg.all;
 
+--------------------------------------------------------------------------------
+--                                 ENTITY                                     --
+--------------------------------------------------------------------------------
 entity exec is
 	port (
 		clk           : in  std_logic;
@@ -13,28 +25,111 @@ entity exec is
 		flush         : in  std_logic;
 
 		-- from DEC
-		op            : in  exec_op_type;
+		op            : in  exec_op_type; -- aluop, alusrc1, alusrc2, alusrc3, rs1, rs2, readdata1, readdata2, imm
 		pc_in         : in  pc_type;
 
 		-- to MEM
-		pc_old_out    : out pc_type;
-		pc_new_out    : out pc_type;
-		aluresult     : out data_type;
-		wrdata        : out data_type;
-		zero          : out std_logic;
+		pc_old_out    : out pc_type := ZERO_PC;		-- vec, imem address
+		pc_new_out    : out pc_type := ZERO_PC;		-- vec, imem address
+		aluresult     : out data_type := ZERO_DATA;	-- vec, memory data (32 Bit)
+		wrdata        : out data_type := ZERO_DATA;	-- vec, memory data (32 Bit)
+		zero          : out std_logic := '0';
 
 		memop_in      : in  mem_op_type;
-		memop_out     : out mem_op_type;
+		memop_out     : out mem_op_type := MEM_NOP;
 		wbop_in       : in  wb_op_type;
-		wbop_out      : out wb_op_type;
+		wbop_out      : out wb_op_type := WB_NOP;
 
 		-- FWD
-		exec_op       : out exec_op_type;
+		exec_op       : out exec_op_type := EXEC_NOP;
 		reg_write_mem : in  reg_write_type;
 		reg_write_wr  : in  reg_write_type
 	);
 end entity;
 
+--------------------------------------------------------------------------------
+--                               ARCHITECTURE                                 --
+--------------------------------------------------------------------------------
 architecture rtl of exec is
+	--ALU input signals:
+	signal aluop_s : alu_op_type := ALU_NOP;
+	signal alu_A_s : data_type := ZERO_DATA;
+	signal alu_B_s : data_type := ZERO_DATA;
+	
 begin
+	
+	--Instantiate ALU entity
+	alu_inst : entity work.alu(rtl)
+		port map(
+			op	=> aluop_s,
+			A	=>	alu_A_s,
+			B	=> alu_B_s,
+			R	=> aluresult,
+			Z	=> zero
+		);
+	
+	
+	--Synchonous Through Put:
+	sync_through_put: process(clk)
+	begin
+		if rising_edge(clk) then
+			if (res_n = '0') then
+				pc_old_out <= ZERO_PC;
+				memop_out <= MEM_NOP;
+				wbop_out <= WB_NOP;
+				exec_op <= EXEC_NOP; -- irrelevant for now!
+			elsif (stall = '0') then -- only update registers when not stalled
+				pc_old_out <= pc_in;
+				memop_out <= memop_in;
+				wbop_out <= wbop_in;
+				exec_op <= op; -- irrelevant for now!
+			end if;
+		end if;
+	end process;
+	
+
+	--Synchronous Exec Logic:
+	sync_exec_logic: process(clk)
+		variable selector : std_logic_vector(2 downto 0) := "000";
+	begin
+		if rising_edge(clk) then
+			if (res_n = '0') then
+				pc_new_out <= ZERO_PC;
+				aluresult <= ZERO_DATA;
+				wrdata <= ZERO_DATA;
+				zero <= '0';
+			elsif (stall = '0') then -- only update registers when not stalled
+				selector := op.alusrc1 & op.alusrc2 & op.alusrc3;
+				case (selector) is
+					when "011" => -- special case: JALR
+						alu_A_s <= to_data_type(pc_in);
+						alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
+						pc_new_out <= to_pc_type(std_logic_vector(unsigned(op.imm) + unsigned(op.readdata1)));
+					when others =>
+						--ALU input signals:
+						case op.alusrc1 is -- select input A
+							when '1' => alu_A_s <= to_data_type(pc_in);
+							when others => alu_A_s <= op.readdata1;
+						end case;
+						case op.alusrc2 is -- select input B
+							when '1' => alu_B_s <= op.imm;
+							when others => alu_B_s <= op.readdata2;
+						end case;
+						
+						--Addition for PC:
+						case op.alusrc3 is
+							when '1' => pc_new_out <= to_pc_type(std_logic_vector(unsigned(pc_in) + shift_left(unsigned(op.imm),1)));
+							when others => pc_new_out <= pc_in;
+						end case;
+				end case;
+				
+				--Forward Signals to Memory Stage:
+				wrdata <= op.readdata2;
+				aluop_s <= op.aluop;
+				
+			end if;
+		end if;
+	end process;
+
+
 end architecture;

@@ -93,33 +93,19 @@ architecture bench of tb is
 
 begin
 	--Instance of UUT:
-	exec_inst : entity work.exec
+	fetch_inst : entity work.fetch
 	port map (
-		clk           => clk,
-		res_n         => res_n,
-		stall         => 
-		flush         =>
-
-		-- from DEC
-		op            => ,
-		pc_in         => ,
-
-		-- to MEM
-		pc_old_out    => ,
-		pc_new_out    => ,
-		aluresult     => ,
-		wrdata        => ,
-		zero          => ,
-
-		memop_in      => ,
-		memop_out     => ,
-		wbop_in       => ,
-		wbop_out      => ,
-
-		-- FWD
-		exec_op       => ,
-		reg_write_mem => ,
-		reg_write_wr  : in  reg_write_type
+		clk		=> clk,
+		res_n		=> res_n,
+		stall		=> '0',
+		flush		=> '0',
+		mem_busy	=> open,
+		pcsrc		=> inp.pcsrc,
+		pc_in		=> inp.pc_in,
+		pc_out	=> outp.pc_out,
+		instr    => outp.instr,
+		mem_out  => open,
+		mem_in	=> inp.mem_in
 	);
 
 	--Read and apply input data:
