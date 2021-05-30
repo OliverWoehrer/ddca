@@ -95,9 +95,7 @@ begin
 		if rising_edge(clk) then
 			if (res_n = '0') then
 				pc_new_out <= ZERO_PC;
-				aluresult <= ZERO_DATA;
 				wrdata <= ZERO_DATA;
-				zero <= '0';
 			elsif (stall = '0') then -- only update registers when not stalled
 				selector := op.alusrc1 & op.alusrc2 & op.alusrc3;
 				case (selector) is

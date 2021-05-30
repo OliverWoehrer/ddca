@@ -21,11 +21,12 @@ entity pipeline is
 end entity;
 
 architecture impl of pipeline is
-	signal stall_s 						: std_logic := '0';
+	signal stall 							: std_logic := '0';
+	signal flush							: std_logic := '0';
 	
 	--fetch
 	signal mem_busy_from_fetch_s		: std_logic;
-	signal pc_from_fetch_s 				: pc_type;
+	signal pc_from_fetch_s				: pc_type;
 	signal instr_from_fetch_s			: instr_type;
 	
 	--decode
@@ -47,8 +48,8 @@ architecture impl of pipeline is
 	signal mem_busy_from_mem_s			: std_logic;
 	signal reg_write_from_mem_s		: reg_write_type;
 	
-	signal pcsrc_from_mem_s				: std_logic;
-	signal pc_in_form_mem_s				: pc_type;
+	signal pcsrc							: std_logic;
+	signal pc_from_mem_s					: pc_type;
 	
 	signal wbop_from_mem_s 				: wb_op_type;
 	signal pc_old_from_mem_s    		: pc_type;
@@ -60,19 +61,19 @@ architecture impl of pipeline is
 	
 	
 begin
-	stall_s <= mem_busy_from_fetch_s or mem_busy_from_mem_s;
+	stall <= mem_busy_from_fetch_s or mem_busy_from_mem_s;
 
-	fetch_stage_inst : entity work.fetch
+	fetch_inst : entity work.fetch
 	port map (
 		clk       => clk,
 		res_n     => res_n,
-		stall     => stall_s,
-		flush     => '0',
+		stall     => stall,
+		flush     => flush,
 		mem_busy  => mem_busy_from_fetch_s,
 		
 		-- from mem
-		pcsrc     => pcsrc_from_mem_s,
-		pc_in     => pc_in_form_mem_s,
+		pcsrc     => pcsrc,
+		pc_in     => pc_from_mem_s,
 		
 		-- to_decode
 		pc_out    => pc_from_fetch_s,
@@ -83,12 +84,12 @@ begin
 		mem_in    => mem_i_in
 	);
 	
-	decode_stage_inst : entity work.decode
+	decode_inst : entity work.decode
 	port map(
 		clk       	=> clk,
 		res_n      	=> res_n,
-		stall      	=> stall_s,
-		flush      	=> '0',
+		stall      	=> stall,
+		flush      	=> flush,
 	
 		-- from fetch
 		pc_in      	=> pc_from_fetch_s,					
@@ -107,12 +108,12 @@ begin
 		exc_dec    => open
 	);
 	
-	execute_stage_inst : entity work.exec
+	execute_inst : entity work.exec
 	port map(
 		clk           => clk,
 		res_n         => res_n,
-		stall         => stall_s,
-		flush         => '0',
+		stall         => stall,
+		flush         => flush,
 
 		-- from DEC
 		op            => exec_op_from_decode_s,
@@ -136,12 +137,12 @@ begin
 		reg_write_wr  => REG_NOP
 	);
 	
-	memory_stage_inst : entity work.mem
+	memory_inst : entity work.mem
 	port map(
 		clk           	=> clk,
 		res_n        	=> res_n,
-		stall         	=> stall_s,
-		flush         	=> '0',
+		stall         	=> stall,
+		flush         	=> flush,
 
 		-- to Ctrl
 		mem_busy      	=> mem_busy_from_mem_s,
@@ -159,8 +160,8 @@ begin
 		reg_write     	=> reg_write_from_mem_s,
 
 		-- to FETCH
-		pc_new_out    	=> pc_in_form_mem_s,
-		pcsrc         	=> pcsrc_from_mem_s,
+		pc_new_out    	=> pc_from_mem_s,
+		pcsrc         	=> pcsrc,
 
 		-- to WB
 		wbop_out      	=> wbop_from_mem_s,
@@ -177,12 +178,12 @@ begin
 		exc_store     	=> open
 	);
 	
-	write_back_inst : entity work.wb
+	writeback_inst : entity work.wb
 	port map(
 		clk        		=> clk,
 		res_n      		=> res_n,
-		stall      		=> stall_s,
-		flush      		=> '0',
+		stall      		=> stall,
+		flush      		=> flush,
 
 		-- from MEM
 		op         		=> wbop_from_mem_s,
