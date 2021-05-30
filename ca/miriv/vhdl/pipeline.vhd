@@ -25,39 +25,39 @@ architecture impl of pipeline is
 	signal flush							: std_logic := '0';
 	
 	--fetch
-	signal mem_busy_from_fetch_s		: std_logic;
-	signal pc_from_fetch_s				: pc_type;
-	signal instr_from_fetch_s			: instr_type;
+	signal mem_busy_from_fetch_s		: std_logic := '0';
+	signal pc_from_fetch_s				: pc_type := (others => '0');
+	signal instr_from_fetch_s			: instr_type := (others => '0');
 	
 	--decode
-	signal pc_from_decode_s				: pc_type;
-	signal exec_op_from_decode_s		: exec_op_type;
-	signal mem_op_from_decode_s		: mem_op_type;
-	signal wb_op_from_decode_s			: wb_op_type;
+	signal pc_from_decode_s				: pc_type := (others => '0');
+	signal exec_op_from_decode_s		: exec_op_type := EXEC_NOP;
+	signal mem_op_from_decode_s		: mem_op_type := MEM_NOP;
+	signal wb_op_from_decode_s			: wb_op_type := WB_NOP;
 	
 	--execute 
-	signal pc_old_from_execute_s		: pc_type;
-	signal pc_new_from_execute_s		: pc_type;
-	signal aluresult_from_execute_s  : data_type;
-	signal wrdata_from_execute_s		: data_type;
-	signal zero_from_execute_s			: std_logic;
-	signal mem_op_from_execute_s		: mem_op_type;
-	signal wb_op_from_execute_s		: wb_op_type;
+	signal pc_old_from_execute_s		: pc_type := (others => '0');
+	signal pc_new_from_execute_s		: pc_type := (others => '0');
+	signal aluresult_from_execute_s  : data_type := (others => '0');
+	signal wrdata_from_execute_s		: data_type := (others => '0');
+	signal zero_from_execute_s			: std_logic := '0';
+	signal mem_op_from_execute_s		: mem_op_type := MEM_NOP;
+	signal wb_op_from_execute_s		: wb_op_type := WB_NOP;
 	
 	--mem
-	signal mem_busy_from_mem_s			: std_logic;
-	signal reg_write_from_mem_s		: reg_write_type;
+	signal mem_busy_from_mem_s			: std_logic := '0';
+	signal reg_write_from_mem_s		: reg_write_type := REG_NOP;
 	
-	signal pcsrc							: std_logic;
-	signal pc_from_mem_s					: pc_type;
+	signal pcsrc							: std_logic := '0';
+	signal pc_from_mem_s					: pc_type := (others => '0');
 	
-	signal wbop_from_mem_s 				: wb_op_type;
-	signal pc_old_from_mem_s    		: pc_type;
-	signal aluresult_from_mem_s 		: data_type;
-	signal memresult_from_mem_s     	: data_type;
+	signal wbop_from_mem_s 				: wb_op_type := WB_NOP;
+	signal pc_old_from_mem_s    		: pc_type := (others => '0');
+	signal aluresult_from_mem_s 		: data_type := (others => '0');
+	signal memresult_from_mem_s     	: data_type := (others => '0');
 	
 	--wb
-	signal reg_write_from_wb_s			: reg_write_type;
+	signal reg_write_from_wb_s			: reg_write_type := REG_NOP;
 	
 	
 begin

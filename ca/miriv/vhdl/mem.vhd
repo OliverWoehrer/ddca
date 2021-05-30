@@ -29,7 +29,7 @@ entity mem is
 		reg_write     : out reg_write_type;
 
 		-- to FETCH
-		pc_new_out    : out pc_type;
+		pc_new_out    : out pc_type:= (others => '0');
 		pcsrc         : out std_logic;
 
 		-- to WB

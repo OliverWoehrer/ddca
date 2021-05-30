@@ -25,7 +25,7 @@ entity decode is
 		instr      : in  instr_type;				--vec
 
 		-- from writeback
-		reg_write  : in reg_write_type;			--	write, reg, data  für regfile
+		reg_write  : in reg_write_type;									--	write, reg, data  für regfile
 
 		-- towards next stages
 		pc_out     : out pc_type := (others => '0');					-- vec 
@@ -51,7 +51,7 @@ architecture rtl of decode is
 	constant OPC_NOP		: std_logic_vector(6 downto 0) := "0001111";
 
 	signal instr_s 		: instr_type := (others => '0');
-	signal pc_s				: pc_type;
+	signal pc_s				: pc_type := (others => '0');
 	
 	signal opcode			: std_logic_vector(6 downto 0);
 	signal funct7 			: std_logic_vector(6 downto 0);

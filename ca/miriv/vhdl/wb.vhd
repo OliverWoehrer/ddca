@@ -19,15 +19,15 @@ entity wb is
 		pc_old_in  : in  pc_type;
 
 		-- to FWD and DEC
-		reg_write  : out reg_write_type
+		reg_write  : out reg_write_type := REG_NOP
 	);
 end entity;
 
 architecture rtl of wb is
-	signal op_s				: wb_op_type;
-	signal aluresult_s	: data_type;
-	signal memresult_s	: data_type;
-	signal pc_old_s		: pc_type;
+	signal op_s				: wb_op_type := WB_NOP;
+	signal aluresult_s	: data_type := (others => '0');
+	signal memresult_s	: data_type := (others => '0');
+	signal pc_old_s		: pc_type := (others => '0');
 begin
 	mux : process(all)
 	begin
