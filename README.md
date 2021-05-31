@@ -1,6 +1,5 @@
 # DDCA Group Project
-This is the repository of the DDCA Lab Group Project at the Technical University of Vienna in SS2021.<br>
-The task is to implement a simplyfied version of a RISC-V pipeline in VHDL
+This is the repository of the DDCA Lab Group Project at the Technical University of Vienna in SS2021. The task is to implement a simplyfied version of a RISC-V pipeline in VHDL
 
 # Usefull Tools and Material
 ## RISC-V Online Simulator
