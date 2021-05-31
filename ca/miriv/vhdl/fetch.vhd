@@ -30,8 +30,8 @@ entity fetch is
 
 		pcsrc      : in  std_logic;
 		pc_in      : in  pc_type;
-		pc_out     : out pc_type := (others => '0');
-		instr      : out instr_type := (others => '0');
+		pc_out     : out pc_type := ZERO_PC;
+		instr      : out instr_type := NOP_INST;
 
 		-- memory controller interface
 		mem_out   : out mem_out_type := MEM_OUT_NOP;
@@ -47,6 +47,11 @@ architecture rtl of fetch is
 	constant PC_RESET : unsigned(pc_type'length-1 downto 0) := (others => '0');
 	signal pc : unsigned(pc_type'length-1 downto 0) := PC_RESET;
 	
+	signal temp_instr : instr_type := NOP_INST;
+	
+	--Reset Flag:
+	signal reset_flag : std_logic := '0';
+	
 begin
 	--Permanent Hardwires:
 	pc_out <= std_logic_vector(pc);
@@ -58,45 +63,73 @@ begin
 	mem_out.wrdata <= (others => '0'); -- constant zero
 	
 	
-	--Synchronous Fetch Logic:
-	fetch_logic_sync: process(clk)
-		variable reset_flag : boolean := false;
+	
+	--Synchronous Program Counter Logic:
+	pc_logic_sync: process(clk)
 	begin
 		if rising_edge(clk) then
 			if (res_n = '0') then -- reset PC to zero
 				pc <= PC_RESET;
-				instr <= NOP_INST;
-				reset_flag := true;
 			elsif (stall = '0') then -- only update when not stalled
-				if (flush = '1') then -- determine next instruction
-					mem_out.rd <= '0';
-					instr <= NOP_INST;
-				else
-					mem_out.rd <= '1';
-					if (reset_flag = true) then
-						instr <= NOP_INST;
-					else
-						instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
-						instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
-						instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
-						instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
-					end if;
-				end if;
-				
 				if (pcsrc = '1') then -- determine next program counter
 					pc <= unsigned(pc_in);
-				elsif (reset_flag = true) then
+				/*elsif (reset_flag = true) then
 					pc <= PC_RESET;
+					report "reset_flag PC";*/
 				else -- increment 
 					pc <= pc + 4;
-				end if;
-				
-				if (reset_flag = true) then
-					reset_flag := false; -- reset reset_flag
 				end if;
 			end if;
 		end if;
 	end process;
+	
+	
+	--Synchronous Instruction Logic:
+	instr_logic_sync: process(clk)
+	begin
+		if rising_edge(clk) then
+			if (res_n = '0') then -- reset PC to zero
+				temp_instr <= NOP_INST;
+				reset_flag <= '1';
+			elsif (stall = '0') then -- only update when not stalled
+				if (flush = '1') or (reset_flag = '1') then -- determine next instruction
+					mem_out.rd <= '0';
+					temp_instr <= NOP_INST;
+					report "reset_flag INST";
+				else
+					mem_out.rd <= '1';
+					temp_instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
+					temp_instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
+					temp_instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
+					temp_instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
+				end if;
+				if (reset_flag = '1') then
+						reset_flag <= '0'; -- reset reset_flag
+				end if;
+			end if;
+		end if;
+	end process;
+	
+	--Asynchronous Instruction Logic:
+	instr_logic_async: process(all)
+	begin
+		if (res_n = '0') then -- reset PC to zero
+			instr <= NOP_INST;
+		elsif (stall = '0') then -- only update when not stalled
+			if (flush = '1') or (reset_flag = '1') then -- determine next instruction
+				instr <= NOP_INST;
+				report "reset_flag INST";
+			else
+				instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
+				instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
+				instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
+				instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
+			end if;
+		else
+			instr <= temp_instr;
+		end if;
+	end process;
+				
 
 	
 end architecture;

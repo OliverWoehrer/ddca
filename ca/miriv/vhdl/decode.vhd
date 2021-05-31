@@ -1,11 +1,14 @@
 /*
-	The decode Unit is for converting the given instructions from  the fetch into operations which hav to be done.
-	alusrc1: rs1 or PC
-	alusrc2: rs2 or imm
-	alusrc3: not adding or imm adding
-	speical event OPC_JALR pc = imm + rs1 then alusrc1 = 0 alusrc2 = 1 alusrc3 = 1
+[decode.vhd] DECODE STAGE
+The decode Unit is for converting the given instructions from  the fetch into operations which hav to be done.
+alusrc1: rs1 or PC
+alusrc2: rs2 or imm
+alusrc3: not adding or imm adding
+speical event OPC_JALR pc = imm + rs1 then alusrc1 = 0 alusrc2 = 1 alusrc3 = 1
 */
-
+----------------------------------------------------------------------------------
+--                                LIBRARIES                                     --
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -13,6 +16,9 @@ use ieee.numeric_std.all;
 use work.core_pkg.all;
 use work.op_pkg.all;
 
+--------------------------------------------------------------------------------
+--                                 ENTITY                                     --
+--------------------------------------------------------------------------------
 entity decode is
 	port (
 		clk        : in  std_logic;
@@ -38,6 +44,9 @@ entity decode is
 	);
 end entity;
 
+--------------------------------------------------------------------------------
+--                               ARCHITECTURE                                 --
+--------------------------------------------------------------------------------
 architecture rtl of decode is
 	constant OPC_LUI 		: std_logic_vector(6 downto 0) := "0110111";
 	constant OPC_AUIPIC	: std_logic_vector(6 downto 0) := "0010111";
@@ -201,11 +210,12 @@ begin
 		regwrite    => reg_write.write     
 	);
 	
-	debug : process
+	debug : process(all)
 	begin
-		wait until rising_edge(clk);
-		if reg_write.write = '1' then
-			report "REG:" & to_hstring(reg_write.reg) & " DATA:" & to_hstring(reg_write.data) & lf severity note;
+		if rising_edge(clk) and (reg_write.write = '1') then
+			if (unsigned(reg_write.reg) /= 0) then
+				report "REGFILE["& to_hstring(reg_write.reg) &"] = "&to_hstring(reg_write.data)&lf severity note;
+			end if;
 		end if;
 		
 	end process;
