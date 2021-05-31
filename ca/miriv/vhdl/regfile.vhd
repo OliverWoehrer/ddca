@@ -44,7 +44,7 @@ architecture rtl of regfile is
 	signal reg1, reg2: registers_t;	
 	
 begin
-	--Register File Read Logic:
+	--Register File Read Logic1:
 	read_logic: process(all)
 	begin
 		if rising_edge(clk) then

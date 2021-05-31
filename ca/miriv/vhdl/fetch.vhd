@@ -26,7 +26,7 @@ entity fetch is
 		flush      : in  std_logic;
 
 		-- to control
-		mem_busy   : out std_logic;
+		mem_busy   : out std_logic := '0';
 
 		pcsrc      : in  std_logic;
 		pc_in      : in  pc_type;
@@ -34,7 +34,7 @@ entity fetch is
 		instr      : out instr_type := (others => '0');
 
 		-- memory controller interface
-		mem_out   : out mem_out_type;
+		mem_out   : out mem_out_type := MEM_OUT_NOP;
 		mem_in    : in  mem_in_type
 	);
 end entity;

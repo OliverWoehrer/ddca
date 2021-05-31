@@ -50,7 +50,7 @@ architecture rtl of fetch is
 begin
 	--Permanent Hardwires:
 	pc_out <= std_logic_vector(pc);
-	mem_busy <= mem_in.busy; -- memory signals through-put
+	mem_busy <= mem_in.busy; -- memory signals through-put; TODO: maybe needs to be synced and checked for stall
 	
 	mem_out.address <= std_logic_vector(pc(15 downto 2)); -- PC is address of next instruction
 	mem_out.wr <= '0'; -- no memory writing in this stage

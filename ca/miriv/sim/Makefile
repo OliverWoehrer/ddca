@@ -32,11 +32,11 @@ clean:
 compile:
 	@vsim -c -do "do scripts/compile.do;quit -f"
 
-sim:
+sim: compile
 	@vsim -c $(FILE_OPT) -t ps work.tb_cpu -quiet -do "run $(TIME);quit -f" #| grep "\*\*"
 	@cat output.txt
 
-sim_gui:
+sim_gui: compile
 	@vsim $(FILE_OPT) -t ps work.tb_cpu -quiet -voptargs=+acc -do "do scripts/wave.do;run 5us;wave zoom full"
 
 

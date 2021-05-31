@@ -25,7 +25,7 @@ entity regfile is
 		res_n            : in  std_logic;
 		stall            : in  std_logic;
 		rdaddr1, rdaddr2 : in  reg_adr_type;
-		rddata1, rddata2 : out data_type;
+		rddata1, rddata2 : out data_type := ZERO_DATA;
 		wraddr           : in  reg_adr_type;
 		wrdata           : in  data_type;
 		regwrite         : in  std_logic
@@ -47,23 +47,25 @@ begin
 	--Register File Read Logic:
 	read_logic: process(all)
 	begin
-		if (stall = '0') then
-			--Handle Read Interface 1:
-			if (rdaddr1 = std_logic_vector(to_unsigned(0,REG_BITS))) then
-				rddata1 <= (others => '0');
-			elsif (rdaddr1 = wraddr) then
-				rddata1 <= wrdata;
-			else
-				rddata1 <= reg1(to_integer(unsigned(rdaddr1)));
-			end if;
+		if rising_edge(clk) then
+			if (stall = '0') then
+				--Handle Read Interface 1:
+				if (rdaddr1 = std_logic_vector(to_unsigned(0,REG_BITS))) then
+					rddata1 <= (others => '0');
+				elsif (rdaddr1 = wraddr) then
+					rddata1 <= wrdata;
+				else
+					rddata1 <= reg1(to_integer(unsigned(rdaddr1)));
+				end if;
 
-			--Handle Read Interface 2:
-			if (rdaddr2 = std_logic_vector(to_unsigned(0,REG_BITS))) then
-				rddata2 <= (others => '0');
-			elsif (rdaddr2 = wraddr) and (regwrite = '1') then
-				rddata2 <= wrdata;
-			else
-				rddata2 <= reg2(to_integer(unsigned(rdaddr2)));
+				--Handle Read Interface 2:
+				if (rdaddr2 = std_logic_vector(to_unsigned(0,REG_BITS))) then
+					rddata2 <= (others => '0');
+				elsif (rdaddr2 = wraddr) and (regwrite = '1') then
+					rddata2 <= wrdata;
+				else
+					rddata2 <= reg2(to_integer(unsigned(rdaddr2)));
+				end if;
 			end if;
 		end if;
 	end process;
