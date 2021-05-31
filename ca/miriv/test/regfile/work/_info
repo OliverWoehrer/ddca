@@ -7,14 +7,14 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 d/home/edauser/Documents/ddca_ss2021/ca/miriv/test/regfile
+d/home/edauser/Documents/ddca_ss2021/ca/miriv/test/regfile
 Pcore_pkg
-Z1 DPx4 work 7 mem_pkg 0 22 jkC@zQdInSMWP>:fH;84W1
-Z2 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
-Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
-Z4 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
-Z5 w1620414201
-R0
+Z0 DPx4 work 7 mem_pkg 0 22 jkC@zQdInSMWP>:fH;84W1
+Z1 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+Z4 w1620823419
+Z5 d/home/edauser/ddca/ca/miriv/test/regfile
 Z6 8../../vhdl/core_pkg.vhd
 Z7 F../../vhdl/core_pkg.vhd
 l0
@@ -24,9 +24,9 @@ V[?:aFfz`TDV=[^@nEVhBS2
 Z8 OV;C;10.5b;63
 33
 b1
-Z9 !s110 1622381535
+Z9 !s110 1622468498
 !i10b 1
-Z10 !s108 1622381535.000000
+Z10 !s108 1622468498.000000
 Z11 !s90 -work|work|-2008|../../vhdl/core_pkg.vhd|
 Z12 !s107 ../../vhdl/core_pkg.vhd|
 !i113 1
@@ -34,10 +34,10 @@ Z13 o-work work -2008
 Z14 tExplicit 1 CvgOpt 0
 Bbody
 Z15 DPx4 work 8 core_pkg 0 22 [?:aFfz`TDV=[^@nEVhBS2
+R0
 R1
 R2
 R3
-R4
 l0
 L40
 VH?PG6Z>UVG^G=LBKCFfW?3
@@ -53,10 +53,10 @@ R12
 R13
 R14
 Pmem_pkg
+R2
 R3
 R4
 R5
-R0
 Z16 8../../vhdl/mem_pkg.vhd
 Z17 F../../vhdl/mem_pkg.vhd
 l0
@@ -75,9 +75,9 @@ Z19 !s107 ../../vhdl/mem_pkg.vhd|
 R13
 R14
 Bbody
-R1
+R0
+R2
 R3
-R4
 l0
 L61
 VV_>YU:VOD2]XTbG0XCBCU2
@@ -93,19 +93,19 @@ R19
 R13
 R14
 Pop_pkg
-R1
-R2
-R15
-R3
-R4
-R5
 R0
+R1
+R15
+R2
+R3
+w1622301472
+R5
 8../../vhdl/op_pkg.vhd
 F../../vhdl/op_pkg.vhd
 l0
 L6
-V]1A>03Co4d8UR]`gbcz6X0
-!s100 =I?6>VChSo_LLfVCiMPoK2
+VMZ>0BgR@bChNo[_5PMT@E3
+!s100 <BWoTe:lzXW8oGI@M^ke71
 R8
 33
 R9
@@ -117,13 +117,13 @@ R10
 R13
 R14
 Eregfile
-Z20 w1622381518
+Z20 w1622468493
 R15
+R0
 R1
 R2
 R3
-R4
-R0
+R5
 Z21 8../../vhdl/regfile.vhd
 Z22 F../../vhdl/regfile.vhd
 l0
@@ -132,72 +132,72 @@ VNOUoC:=1KPim<><I6HU3[3
 !s100 IR<Ckbi@nE:@6O<J5nJSz2
 R8
 33
-Z23 !s110 1622381536
+R9
 !i10b 1
 R10
-Z24 !s90 -work|work|-2008|../../vhdl/regfile.vhd|
-Z25 !s107 ../../vhdl/regfile.vhd|
+Z23 !s90 -work|work|-2008|../../vhdl/regfile.vhd|
+Z24 !s107 ../../vhdl/regfile.vhd|
 !i113 1
 R13
 R14
 Artl
 R15
+R0
 R1
 R2
 R3
-R4
-Z26 DEx4 work 7 regfile 0 22 NOUoC:=1KPim<><I6HU3[3
-l46
+Z25 DEx4 work 7 regfile 0 22 NOUoC:=1KPim<><I6HU3[3
+l47
 L38
-VIScB]R1X?G0XaE`a8F^GH2
-!s100 nNVSUVg5k4YPH6@W<V[RA0
+VC;[Uh=<n7:5z@M^RP4JB02
+!s100 acgoenOBLG`f73Bc[[]U63
 R8
 33
-R23
+R9
 !i10b 1
 R10
+R23
 R24
-R25
 !i113 1
 R13
 R14
 Etb
-Z27 w1621259304
-Z28 DPx4 work 11 tb_util_pkg 0 22 CLLVzBDCaTPa42aX^c7A22
+Z26 w1621348422
+Z27 DPx4 work 11 tb_util_pkg 0 22 CLLVzBDCaTPa42aX^c7A22
 R15
-Z29 DPx4 work 6 op_pkg 0 22 ]1A>03Co4d8UR]`gbcz6X0
+Z28 DPx4 work 6 op_pkg 0 22 MZ>0BgR@bChNo[_5PMT@E3
+R0
+Z29 DPx4 ieee 16 std_logic_textio 0 22 V5TSK`;aJKC<l]CEg1>mz1
 R1
-Z30 DPx4 ieee 16 std_logic_textio 0 22 V5TSK`;aJKC<l]CEg1>mz1
 R2
 R3
-R4
-R0
-Z31 8tb/regfile_tb.vhd
-Z32 Ftb/regfile_tb.vhd
+R5
+Z30 8tb/regfile_tb.vhd
+Z31 Ftb/regfile_tb.vhd
 l0
 L14
 V=2SEJDlM5IoN3`GnPQR_H1
 !s100 Ii_ln0YQ9b_afbI_z]>SW1
 R8
 33
-R23
+Z32 !s110 1622468499
 !i10b 1
-Z33 !s108 1622381536.000000
+Z33 !s108 1622468499.000000
 Z34 !s90 -work|work|-2008|tb/regfile_tb.vhd|
 Z35 !s107 tb/regfile_tb.vhd|
 !i113 1
 R13
 R14
 Abench
-R26
-R28
+R25
+R27
 R15
+R28
+R0
 R29
 R1
-R30
 R2
 R3
-R4
 Z36 DEx4 work 2 tb 0 22 =2SEJDlM5IoN3`GnPQR_H1
 l121
 L17
@@ -205,7 +205,7 @@ Z37 V1c3F68fHU@6<l73:e=Q`e2
 Z38 !s100 0IInJnDhI[5R`Dl:dVemb0
 R8
 33
-R23
+R32
 !i10b 1
 R33
 R34
@@ -214,15 +214,15 @@ R35
 R13
 R14
 Ptb_util_pkg
-R1
+R0
 R15
+R28
 R29
-R30
+R1
 R2
 R3
 R4
 R5
-R0
 Z39 8../tb_util_pkg.vhd
 Z40 F../tb_util_pkg.vhd
 l0
@@ -232,32 +232,32 @@ VCLLVzBDCaTPa42aX^c7A22
 R8
 33
 b1
-R23
+R32
 !i10b 1
-R33
+R10
 Z41 !s90 -work|work|-2008|../tb_util_pkg.vhd|
 Z42 !s107 ../tb_util_pkg.vhd|
 !i113 1
 R13
 R14
 Bbody
-R28
-R1
+R27
+R0
 R15
+R28
 R29
-R30
+R1
 R2
 R3
-R4
 l0
 L50
 VzJ<g;0obPKmOZ8;n50oe11
 !s100 6hnG3>?zIEZVm7<;D>W7M3
 R8
 33
-R23
+R32
 !i10b 1
-R33
+R10
 R41
 R42
 !i113 1

@@ -42,31 +42,41 @@ architecture rtl of regfile is
 	--Register File Storage:
 	constant REGFILE_RESET: registers_t := (others => (others => '0'));
 	signal reg1, reg2: registers_t;	
+	signal temp1, temp2 : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
 	
 begin
 	--Register File Read Logic:
-	read_logic: process(all)
+	sync : process(clk)
 	begin
 		if rising_edge(clk) then
-			if (stall = '0') then
-				--Handle Read Interface 1:
-				if (rdaddr1 = std_logic_vector(to_unsigned(0,REG_BITS))) then
-					rddata1 <= (others => '0');
-				elsif (rdaddr1 = wraddr) then
-					rddata1 <= wrdata;
-				else
-					rddata1 <= reg1(to_integer(unsigned(rdaddr1)));
-				end if;
-
-				--Handle Read Interface 2:
-				if (rdaddr2 = std_logic_vector(to_unsigned(0,REG_BITS))) then
-					rddata2 <= (others => '0');
-				elsif (rdaddr2 = wraddr) and (regwrite = '1') then
-					rddata2 <= wrdata;
-				else
-					rddata2 <= reg2(to_integer(unsigned(rdaddr2)));
-				end if;
+			temp1 <= reg1(to_integer(unsigned(rdaddr1)));
+			temp2 <= reg2(to_integer(unsigned(rdaddr2)));
+		end if;
+	end process;
+	
+	read_logic: process(all)
+	begin
+		if (stall = '0') then
+			--Handle Read Interface 1:
+			if (rdaddr1 = std_logic_vector(to_unsigned(0,REG_BITS))) then
+				rddata1 <= (others => '0');
+			elsif (rdaddr1 = wraddr) then
+				rddata1 <= wrdata;
+			else
+				rddata1 <= reg1(to_integer(unsigned(rdaddr1)));
 			end if;
+
+			--Handle Read Interface 2:
+			if (rdaddr2 = std_logic_vector(to_unsigned(0,REG_BITS))) then
+				rddata2 <= (others => '0');
+			elsif (rdaddr2 = wraddr) and (regwrite = '1') then
+				rddata2 <= wrdata;
+			else
+				rddata2 <= reg2(to_integer(unsigned(rdaddr2)));
+			end if;
+		else
+			rddata1 <= temp1;
+			rddata2 <= temp2;
 		end if;
 	end process;
 

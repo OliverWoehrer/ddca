@@ -200,6 +200,15 @@ begin
 		wrdata     	=> reg_write.data,      
 		regwrite    => reg_write.write     
 	);
+	
+	debug : process
+	begin
+		wait until rising_edge(clk);
+		if reg_write.write = '1' then
+			report "REG:" & to_hstring(reg_write.reg) & " DATA:" & to_hstring(reg_write.data) & lf severity note;
+		end if;
+		
+	end process;
 
 	reg : process 
 	begin
@@ -309,14 +318,14 @@ begin
 				end if;
 				exec_op.aluop <= alu_op_for_OP_IMM(funct3,instr_s(30));
 				exec_op.alusrc2 <= '1';
-				wb_op.write <= '0';
+				wb_op.write <= '1';
 				wb_op.src <= WBS_ALU;
 				
 			when OPC_OP =>
 				--format R
 				exec_op.imm <= (others => '0');
 				exec_op.aluop <= alu_op_for_OP(funct3,funct7);
-				wb_op.write <= '0';
+				wb_op.write <= '1';
 				wb_op.src <= WBS_ALU;
 				
 			when OPC_NOP =>
@@ -327,7 +336,15 @@ begin
 				
 			when others =>
 				exc_dec <= '1';
-				
+				exec_op.aluop <= ALU_NOP;
+				exec_op.alusrc1 <= '0';
+				exec_op.alusrc2 <= '0';
+				exec_op.alusrc3 <= '0';
+				exec_op.imm <= (others => '0');
+				wb_op.write <= '0';
+				wb_op.src <= WBS_ALU;
+				mem_op <= MEM_NOP;
+			
 		end case;
 	end process;
 	
