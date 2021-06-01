@@ -104,7 +104,6 @@ begin
 				if (flush = '1') or (reset_flag = '1') then -- determine next instruction
 					mem_out.rd <= '0';
 					temp_instr <= NOP_INST;
-					report "reset_flag INST";
 				else
 					mem_out.rd <= '1';
 					temp_instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
@@ -127,7 +126,6 @@ begin
 		elsif (stall = '0') then -- only update when not stalled
 			if (flush = '1') or (reset_flag = '1') then -- determine next instruction
 				instr <= NOP_INST;
-				report "reset_flag INST";
 			else
 				instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
 				instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1

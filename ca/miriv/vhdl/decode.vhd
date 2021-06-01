@@ -210,15 +210,15 @@ begin
 		regwrite    => reg_write.write     
 	);
 	
-	debug : process(all)
-	begin
-		if rising_edge(clk) and (reg_write.write = '1') then
-			if (unsigned(reg_write.reg) /= 0) then
-				--report "REGFILE["& to_hstring(reg_write.reg) &"] = "&to_hstring(reg_write.data)&lf severity note;
-			end if;
-		end if;
-		
-	end process;
+--	debug : process(all)
+--	begin
+--		if rising_edge(clk) and (reg_write.write = '1') then
+--			if (unsigned(reg_write.reg) /= 0) then
+--				report "REGFILE["& to_hstring(reg_write.reg) &"] = "&to_hstring(reg_write.data)&lf severity note;
+--			end if;
+--		end if;
+--		
+--	end process;
 
 	reg : process 
 	begin
