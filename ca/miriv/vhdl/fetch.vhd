@@ -43,48 +43,57 @@ end entity;
 --                               ARCHITECTURE                                 --
 --------------------------------------------------------------------------------
 architecture rtl of fetch is
-	--Internal Program Counter:
-	constant PC_RESET : unsigned(pc_type'length-1 downto 0) := (others => '0');
-	signal pc : unsigned(pc_type'length-1 downto 0) := PC_RESET;
+	--Program Counter:
+	signal pc_s, pc_new : pc_type := ZERO_PC;
 	
+	--Instruction Logic:
 	signal temp_instr : instr_type := NOP_INST;
-	
-	--Reset Flag:
 	signal reset_flag : std_logic := '0';
 	
 begin
 	--Permanent Hardwires:
-	pc_out <= std_logic_vector(pc);
+	pc_out <= pc_s;
 	mem_busy <= mem_in.busy; -- memory signals through-put; TODO: maybe needs to be synced and checked for stall
 	
-	mem_out.address <= std_logic_vector(pc(15 downto 2)); -- PC is address of next instruction
+	mem_out.address <= std_logic_vector(pc_new(15 downto 2)); -- PC is address of next instruction
 	mem_out.wr <= '0'; -- no memory writing in this stage
 	mem_out.byteena <= "1111"; -- always read a hole word (32 Bit)
 	mem_out.wrdata <= (others => '0'); -- constant zero
 	
-	
-	
-	--Synchronous Program Counter Logic:
-	pc_logic_sync: process(clk)
+	--Register for Program Counter:
+	reg_sync: process(clk)
 	begin
 		if rising_edge(clk) then
-			if (res_n = '0') then -- reset PC to zero
-				pc <= PC_RESET;
-			elsif (stall = '0') then -- only update when not stalled
-				if (pcsrc = '1') then -- determine next program counter
-					pc <= unsigned(pc_in);
-				/*elsif (reset_flag = true) then
-					pc <= PC_RESET;
-					report "reset_flag PC";*/
-				else -- increment 
-					pc <= pc + 4;
-				end if;
+			if (res_n = '0') then
+				pc_s <= ZERO_PC;
+			elsif (stall = '0') then
+				pc_s <= pc_new;
+			elsif (flush = '1') then
+				pc_s <= ZERO_PC;
+			else
+				-- keep old register values
 			end if;
 		end if;
 	end process;
 	
 	
-	--Synchronous Instruction Logic:
+	--Async PC Logic:
+	pc_logic: process(all)
+	begin
+		if res_n = '0' then
+			pc_new <= ZERO_PC;
+		elsif (reset_flag = '1') then
+			pc_new <= ZERO_PC;
+		else
+			case pcsrc is
+				when '1' => pc_new <= pc_in;
+				when others => pc_new <= std_logic_vector(unsigned(pc_s) + to_unsigned(4,PC_WIDTH));
+			end case;
+		end if;
+	end process;
+	
+	
+	--Register for Instruction Logic:
 	instr_logic_sync: process(clk)
 	begin
 		if rising_edge(clk) then

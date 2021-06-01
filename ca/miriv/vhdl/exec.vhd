@@ -51,21 +51,30 @@ end entity;
 --                               ARCHITECTURE                                 --
 --------------------------------------------------------------------------------
 architecture rtl of exec is
+	--Internal Register Signals:
+	signal op_s : exec_op_type := EXEC_NOP;
+	signal pc_s : pc_type := ZERO_PC;
+	signal memop_s : mem_op_type := MEM_NOP;
+	signal wbop_s : wb_op_type := WB_NOP;
+
 	--ALU input signals:
 	signal aluop_s : alu_op_type := ALU_NOP;
 	signal alu_A_s : data_type := ZERO_DATA;
 	signal alu_B_s : data_type := ZERO_DATA;
-	signal pc_s : pc_type := ZERO_PC;
 	
 begin
 
 	--Permanent Hardwires:
 	pc_old_out <= pc_s;
+	exec_op <= EXEC_NOP; -- can be ignored for now
+	memop_out <= memop_s;
+	wbop_out <= wbop_s;
+	wrdata <= op_s.readdata2; -- forward signal to Memory Stage:
 	
 	--Instantiate ALU entity
 	alu_inst : entity work.alu(rtl)
 		port map(
-			op	=> aluop_s,
+			op	=> op_s.aluop,
 			A	=>	alu_A_s,
 			B	=> alu_B_s,
 			R	=> aluresult,
@@ -73,6 +82,67 @@ begin
 		);
 	
 	
+	--Register for Inputs:
+	reg_sync: process(clk)
+	begin
+		if rising_edge(clk) then
+			if (res_n = '0') then
+				op_s <= EXEC_NOP;
+				pc_s <= ZERO_PC;
+				memop_s <= MEM_NOP;
+				wbop_s <= WB_NOP;				
+			elsif (stall = '0') then
+				op_s <= op;
+				pc_s <= pc_in;
+				memop_s <= memop_in;
+				wbop_s <= wbop_in;
+			elsif (flush = '1') then
+				op_s <= EXEC_NOP;
+				pc_s <= ZERO_PC;
+				memop_s <= MEM_NOP;
+				wbop_s <= WB_NOP;
+			else
+				-- keep old register values
+			end if;
+		end if;
+	end process;
+	
+	
+	--Async Exec Logic:
+	exec_logic: process(all)
+		variable selector : std_logic_vector(2 downto 0) := "000";
+	begin
+		selector := op_s.alusrc1 & op_s.alusrc2 & op_s.alusrc3;
+		case (selector) is
+			when "101" => -- special case: JAL
+				alu_A_s <= to_data_type(pc_s);
+				alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
+				pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + signed(op_s.imm)));
+			when "011" => -- special case: JALR
+				alu_A_s <= to_data_type(pc_s);
+				alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
+				pc_new_out <= to_pc_type(std_logic_vector(unsigned(op_s.imm) + unsigned(op_s.readdata1)));
+			when others =>
+				--ALU input signals:
+				case op.alusrc1 is -- select input A
+					when '1' => alu_A_s <= to_data_type(pc_s); --TODO: changed to pc_old_out, needs to be tested
+					when others => alu_A_s <= op_s.readdata1;
+				end case;
+				case op.alusrc2 is -- select input B
+					when '1' => alu_B_s <= op_s.imm;
+					when others => alu_B_s <= op_s.readdata2;
+				end case;
+				
+				--Addition for PC:
+				case op.alusrc3 is
+					when '1' => pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + shift_left(signed(op_s.imm),1)));
+					when others => pc_new_out <= pc_s;
+				end case;
+		end case;
+	end process;
+	
+	
+	/*
 	--Synchonous Through Put:
 	sync_through_put: process(clk)
 	begin
@@ -103,6 +173,10 @@ begin
 			elsif (stall = '0') then -- only update registers when not stalled
 				selector := op.alusrc1 & op.alusrc2 & op.alusrc3;
 				case (selector) is
+					when "101" => -- special case: JAL
+						alu_A_s <= to_data_type(pc_s);
+						alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
+						pc_new_out <= to_pc_type(std_logic_vector(signed(pc_in) + signed(op.imm)));
 					when "011" => -- special case: JALR
 						alu_A_s <= to_data_type(pc_s);
 						alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
@@ -132,6 +206,7 @@ begin
 			end if;
 		end if;
 	end process;
+	*/
 
 
 end architecture;
