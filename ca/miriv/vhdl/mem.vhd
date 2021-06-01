@@ -97,7 +97,7 @@ begin
 		case mem_op_s.branch is
 			when BR_BR =>
 				pcsrc <= '1';
-				pc_new_out <= aluresult_in(15 downto 1) & '0';
+				pc_new_out <= pc_new_s(15 downto 0) & '0';
 			when BR_CND =>
 				if zero_s = '1' then
 					pcsrc <= '1';
