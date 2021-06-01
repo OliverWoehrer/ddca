@@ -121,6 +121,7 @@ begin
 	end process branch;
 	
 
+
 	memu_inst : entity work.memu(rtl)
 	port map(
 		op => mem_op_s.mem,
@@ -135,4 +136,7 @@ begin
 		D => mem_in,
 		M => mem_out
 	);
+	
+	
+	
 end architecture;

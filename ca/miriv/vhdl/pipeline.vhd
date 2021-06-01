@@ -22,7 +22,6 @@ end entity;
 
 architecture impl of pipeline is
 	signal stall 							: std_logic := '0';
-	signal flush							: std_logic := '0';
 	
 	--fetch
 	signal mem_busy_from_fetch_s		: std_logic := '0';
@@ -68,7 +67,7 @@ begin
 		clk       => clk,
 		res_n     => res_n,
 		stall     => stall,
-		flush     => flush,
+		flush     => '0',
 		mem_busy  => mem_busy_from_fetch_s,
 		
 		-- from mem
@@ -89,7 +88,7 @@ begin
 		clk       	=> clk,
 		res_n      	=> res_n,
 		stall      	=> stall,
-		flush      	=> flush,
+		flush      	=> '0',
 	
 		-- from fetch
 		pc_in      	=> pc_from_fetch_s,					
@@ -113,7 +112,7 @@ begin
 		clk           => clk,
 		res_n         => res_n,
 		stall         => stall,
-		flush         => flush,
+		flush         => '0',
 
 		-- from DEC
 		op            => exec_op_from_decode_s,
@@ -142,7 +141,7 @@ begin
 		clk           	=> clk,
 		res_n        	=> res_n,
 		stall         	=> stall,
-		flush         	=> flush,
+		flush         	=> '0',
 
 		-- to Ctrl
 		mem_busy      	=> mem_busy_from_mem_s,
@@ -183,7 +182,7 @@ begin
 		clk        		=> clk,
 		res_n      		=> res_n,
 		stall      		=> stall,
-		flush      		=> flush,
+		flush      		=> '0',
 
 		-- from MEM
 		op         		=> wbop_from_mem_s,
