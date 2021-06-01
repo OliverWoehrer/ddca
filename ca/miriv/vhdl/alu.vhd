@@ -42,18 +42,18 @@ begin
 			when ALU_SLT =>
 				if (signed(A) < signed(B)) then
 					R <= std_logic_vector(to_unsigned(1,DATA_WIDTH));
-					Z <= '0';
+					Z <= '1';
 				else
 					R <= std_logic_vector(to_unsigned(0,DATA_WIDTH));
-					Z <= '1';
+					Z <= '0';
 				end if;
 			when ALU_SLTU =>
 				if (unsigned(A) < unsigned(B)) then
 					R <= std_logic_vector(to_signed(1,DATA_WIDTH));
-					Z <= '0';
+					Z <= '1';
 				else
 					R <= std_logic_vector(to_signed(0,DATA_WIDTH));
-					Z <= '1';
+					Z <= '0';
 				end if;
 			when ALU_SLL =>
 				R <= std_logic_vector(shift_left(unsigned(A),to_integer(unsigned(B(4 downto 0)))));

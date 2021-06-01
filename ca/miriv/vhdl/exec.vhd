@@ -124,18 +124,18 @@ begin
 				pc_new_out <= to_pc_type(std_logic_vector(unsigned(op_s.imm) + unsigned(op_s.readdata1)));
 			when others =>
 				--ALU input signals:
-				case op.alusrc1 is -- select input A
+				case op_s.alusrc1 is -- select input A
 					when '1' => alu_A_s <= to_data_type(pc_s); --TODO: changed to pc_old_out, needs to be tested
 					when others => alu_A_s <= op_s.readdata1;
 				end case;
-				case op.alusrc2 is -- select input B
+				case op_s.alusrc2 is -- select input B
 					when '1' => alu_B_s <= op_s.imm;
 					when others => alu_B_s <= op_s.readdata2;
 				end case;
 				
 				--Addition for PC:
-				case op.alusrc3 is
-					when '1' => pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + shift_left(signed(op_s.imm),1)));
+				case op_s.alusrc3 is
+					when '1' => pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + signed(op_s.imm)));
 					when others => pc_new_out <= pc_s;
 				end case;
 		end case;
