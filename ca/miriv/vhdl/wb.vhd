@@ -35,7 +35,7 @@ begin
 		reg_write.reg <= op_s.rd;
 		case op_s.src is
 		when WBS_MEM =>
-			reg_write.data <= memresult_s;
+			reg_write.data <= memresult;
 		when WBS_OPC =>
 			reg_write.data <= to_data_type(pc_old_s);
 		when others => 							--WBS_ALU
