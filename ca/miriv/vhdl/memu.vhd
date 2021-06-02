@@ -159,13 +159,13 @@ begin
 			
 			when MEM_H =>
 				if (A(1 downto 0) = "00") or (A(1 downto 0) = "01") then
-					R(31 downto 24) <= (others => D.rddata(31));		--S
-					R(23 downto 16) <= (others => D.rddata(31));		--S
+					R(31 downto 24) <= (others => D.rddata(23));		--S
+					R(23 downto 16) <= (others => D.rddata(23));		--S
 					R(15 downto 8)  <= D.rddata(23 downto 16);		--b2
 					R(7 downto 0)   <= D.rddata(31 downto 24);		--b3
 				elsif (A(1 downto 0) = "10") or (A(1 downto 0) = "11") then
-					R(31 downto 24) <= (others => D.rddata(15));		--S
-					R(23 downto 16) <= (others => D.rddata(15));		--S
+					R(31 downto 24) <= (others => D.rddata(7));		--S
+					R(23 downto 16) <= (others => D.rddata(7));		--S
 					R(15 downto 8)  <= D.rddata(7 downto 0);			--b0
 					R(7 downto 0)   <= D.rddata(15 downto 8);			--b1
 				else
