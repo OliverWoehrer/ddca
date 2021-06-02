@@ -27,12 +27,12 @@ end entity;
 architecture rtl of memu is
 begin
 	M.address <= A(15 downto 2);
-	B <= D.busy;
+	B <= '1' when (D.busy = '1') or (op.memread = '1' and XL <= '1') else '0';
 	memu_write: process(all)
 	begin
 		if op.memread = '0' and op.memwrite = '1' then
 			XS <= '1';
-			M.wr <= '1';
+			M.wr <= '0';
 			case op.memtype is
 			when MEM_B | MEM_BU =>
 				if A(1 downto 0) = "00" then
@@ -95,7 +95,7 @@ begin
 			end case;
 		else 
 			XS <= '0';
-			M.wr <= '0';
+			M.wr <= op.memwrite;
 			M.byteena <= "1111";
 			M.wrdata <= (others => '0');
 		end if;
@@ -103,9 +103,9 @@ begin
 	
 	memu_read: process(all)
 	begin
-		if op.memread = '1' and op.memwrite = '0' then
+		if (op.memread = '1' and op.memwrite = '0') then
 			XL <= '1';
-			M.rd <= '1';
+			M.rd <= '0';
 			case op.memtype is
 			when MEM_B =>
 				if A(1 downto 0) = "00" then
@@ -198,7 +198,7 @@ begin
 			end case;
 		else
 			XL <= '0';
-			M.rd <= '0';
+			M.rd <= op.memread;
 			R <= (others =>'0');
 		end if;
 	end process;
