@@ -3,17 +3,55 @@
 		.globl  _start
 
 _start:
-		addi x20, x0, -1
-		addi x21, x0, 0
-		addi x22, x0, 0
-		addi x23, x0, 0
-		addi x24, x0, 0
-		addi x25, x0, 0
+		addi x5, x0, 4
+		addi x20, x20, 1
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop		
+		addi x20, x20, 2
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 3
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 5
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 6
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 7
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 8
+		nop
+		nop
+		sll x20, x20, x5
+		nop
+		nop
+		addi x20, x20, 9
 		nop
 		nop
 		nop
 		nop
-		sb x20, 0(x0)
+		sw x20, 0(x0)
 		lb x21, 0(x0)
 		lh x22, 0(x0)	
 		lw x23, 0(x0)

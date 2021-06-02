@@ -47,12 +47,16 @@ architecture rtl of fetch is
 	signal pc_s, pc_new : pc_type := ZERO_PC;
 	
 	--Instruction Logic:
+	signal instr_s : instr_type := NOP_INST; --new
+	signal stall_flag : std_logic := '0';
+	
+	--Instruction Logic:
 	signal temp_instr : instr_type := NOP_INST;
 	signal reset_flag : std_logic := '0';
 	
 begin
 	--Permanent Hardwires:
-	pc_out <= pc_s;
+	--pc_out <= pc_s;
 	mem_busy <= mem_in.busy; -- memory signals through-put; TODO: maybe needs to be synced and checked for stall
 	
 	mem_out.address <= std_logic_vector(pc_new(15 downto 2)); -- PC is address of next instruction
@@ -60,18 +64,29 @@ begin
 	mem_out.byteena <= "1111"; -- always read a hole word (32 Bit)
 	mem_out.wrdata <= (others => '0'); -- constant zero
 	
-	--Register for Program Counter:
+	--Register for Internal Signals:
 	reg_sync: process(clk)
 	begin
 		if rising_edge(clk) then
 			if (res_n = '0') then
 				pc_s <= ZERO_PC;
+				instr_s <= NOP_INST;
+				reset_flag <= '1';
 			elsif (stall = '0') then
 				pc_s <= pc_new;
+				instr_s <= mem_in.rddata;
+				if (reset_flag = '1') then
+					reset_flag <= '0'; -- reset reset_flag
+				end if;
+				if (stall_flag = '1') then
+					stall_flag <= '0'; -- reset stall_flag
+				end if;
 			elsif (flush = '1') then
 				pc_s <= ZERO_PC;
-			else
-				-- keep old register values
+				instr_s <= NOP_INST;
+			else -- unit is stalled, store imem data in register
+				stall_flag <= '1';
+				instr_s <= mem_in.rddata;
 			end if;
 		end if;
 	end process;
@@ -80,6 +95,7 @@ begin
 	--Async PC Logic:
 	pc_logic: process(all)
 	begin
+		pc_out <= pc_s;
 		if res_n = '0' then
 			pc_new <= ZERO_PC;
 		elsif (reset_flag = '1') then
@@ -92,51 +108,31 @@ begin
 		end if;
 	end process;
 	
-	
-	--Register for Instruction Logic:
-	instr_logic_sync: process(clk)
-	begin
-		if rising_edge(clk) then
-			if (res_n = '0') then -- reset PC to zero
-				temp_instr <= NOP_INST;
-				reset_flag <= '1';
-			elsif (stall = '0') then -- only update when not stalled
-				if (flush = '1') or (reset_flag = '1') then -- determine next instruction
-					mem_out.rd <= '0';
-					temp_instr <= NOP_INST;
-				else
-					mem_out.rd <= '1';
-					temp_instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
-					temp_instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
-					temp_instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
-					temp_instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
-				end if;
-				if (reset_flag = '1') then
-						reset_flag <= '0'; -- reset reset_flag
-				end if;
-			end if;
-		end if;
-	end process;
-	
-	--Asynchronous Instruction Logic:
-	instr_logic_async: process(all)
-	begin
-		if (res_n = '0') then -- reset PC to zero
-			instr <= NOP_INST;
-		elsif (stall = '0') then -- only update when not stalled
-			if (flush = '1') or (reset_flag = '1') then -- determine next instruction
-				instr <= NOP_INST;
-			else
-				instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
-				instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
-				instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
-				instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
-			end if;
-		else
-			instr <= temp_instr;
-		end if;
-	end process;
-				
 
+	--Async Instruction Logic:
+	instr_logic: process(all)
+	begin
+		if (res_n = '0') or (flush = '1') then
+			instr <= NOP_INST;
+		elsif (stall_flag = '1') then -- unit is stalled, use registered instr
+			mem_out.rd <= '0';
+			instr(31 downto 24) <= instr_s(7 downto 0);		--b0, most significant byte
+			instr(23 downto 16) <= instr_s(15 downto 8);		--b1
+			instr(15 downto 8)  <= instr_s(23 downto 16);	--b2
+			instr(7 downto 0)   <= instr_s(31 downto 24);	--b3, least significant byte
+		elsif (stall = '0') then -- unit not stalled, use data from imem
+			mem_out.rd <= '1';
+			instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
+			instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
+			instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
+			instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
+		else -- unit was just stalled, still use fetched data from imem
+			mem_out.rd <= '0'; -- new		
+			instr(31 downto 24) <= mem_in.rddata(7 downto 0);		--b0, most significant byte
+			instr(23 downto 16) <= mem_in.rddata(15 downto 8);		--b1
+			instr(15 downto 8)  <= mem_in.rddata(23 downto 16);	--b2
+			instr(7 downto 0)   <= mem_in.rddata(31 downto 24);	--b3, least significant byte
+		end if;
+	end process;
 	
 end architecture;
