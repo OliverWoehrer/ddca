@@ -114,7 +114,7 @@ begin
 	begin
 		if (res_n = '0') or (flush = '1') then
 			instr <= NOP_INST;
-		elsif (stall_flag = '1') then -- unit is stalled, use registered instr
+		elsif (stall_flag = '1') or (reset_flag = '1') then -- unit is stalled, use registered instr
 			mem_out.rd <= '0';
 			instr(31 downto 24) <= instr_s(7 downto 0);		--b0, most significant byte
 			instr(23 downto 16) <= instr_s(15 downto 8);		--b1

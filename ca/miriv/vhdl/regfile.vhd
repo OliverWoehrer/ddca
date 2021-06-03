@@ -41,16 +41,23 @@ architecture rtl of regfile is
 
 	--Register File Storage:
 	constant REGFILE_RESET: registers_t := (others => (others => '0'));
-	signal reg1, reg2: registers_t;	
-	signal temp1, temp2 : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
+	signal reg1, reg2: registers_t := REGFILE_RESET;	
+	signal data1_s, data2_s : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
 	
 begin
 	--Register File Read Logic:
 	sync : process(clk)
 	begin
 		if rising_edge(clk) then
-			temp1 <= reg1(to_integer(unsigned(rdaddr1)));
-			temp2 <= reg2(to_integer(unsigned(rdaddr2)));
+			if (res_n = '0') then
+				data1_s <= ZERO_DATA;
+				data2_s <= ZERO_DATA;
+			elsif (stall = '0') then
+				data1_s <= reg1(to_integer(unsigned(rdaddr1)));
+				data2_s <= reg2(to_integer(unsigned(rdaddr2)));
+			else
+				-- keep old registered values
+			end if;
 		end if;
 	end process;
 	
@@ -75,8 +82,8 @@ begin
 				rddata2 <= reg2(to_integer(unsigned(rdaddr2)));
 			end if;
 		else
-			rddata1 <= temp1;
-			rddata2 <= temp2;
+			rddata1 <= data1_s;
+			rddata2 <= data2_s;
 		end if;
 	end process;
 

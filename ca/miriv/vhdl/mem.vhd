@@ -72,7 +72,7 @@ begin
 			wbop_s		<= WB_NOP;
 			pc_new_s 	<= ZERO_PC;
 			pc_old_s		<= ZERO_PC;
-			aluresult_s <= ZERO_DATA
+			aluresult_s <= ZERO_DATA;
 			wrdata_s		<= ZERO_DATA;
 			zero_s		<= '0';
 		elsif flush = '1' then
