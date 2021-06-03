@@ -43,20 +43,16 @@ end entity;
 --                               ARCHITECTURE                                 --
 --------------------------------------------------------------------------------
 architecture rtl of fetch is
-	--Program Counter:
+	--Internal Registered Signals:
 	signal pc_s, pc_new : pc_type := ZERO_PC;
+	signal instr_s : instr_type := NOP_INST;
 	
-	--Instruction Logic:
-	signal instr_s : instr_type := NOP_INST; --new
+	--Reset Flags:
 	signal stall_flag : std_logic := '0';
-	
-	--Instruction Logic:
-	signal temp_instr : instr_type := NOP_INST;
 	signal reset_flag : std_logic := '0';
 	
 begin
 	--Permanent Hardwires:
-	--pc_out <= pc_s;
 	mem_busy <= mem_in.busy; -- memory signals through-put; TODO: maybe needs to be synced and checked for stall
 	
 	mem_out.address <= std_logic_vector(pc_new(15 downto 2)); -- PC is address of next instruction
@@ -70,7 +66,7 @@ begin
 		if rising_edge(clk) then
 			if (res_n = '0') then
 				pc_s <= ZERO_PC;
-				instr_s <= NOP_INST;
+				instr_s <= NOP_INST_INV;
 				reset_flag <= '1';
 			elsif (stall = '0') then
 				pc_s <= pc_new;
@@ -83,7 +79,7 @@ begin
 				end if;
 			elsif (flush = '1') then
 				pc_s <= ZERO_PC;
-				instr_s <= NOP_INST;
+				instr_s <= NOP_INST_INV;
 			else -- unit is stalled, store imem data in register
 				stall_flag <= '1';
 				instr_s <= mem_in.rddata;
@@ -113,6 +109,7 @@ begin
 	instr_logic: process(all)
 	begin
 		if (res_n = '0') or (flush = '1') then
+			mem_out.rd <= '0';
 			instr <= NOP_INST;
 		elsif (stall_flag = '1') or (reset_flag = '1') then -- unit is stalled, use registered instr
 			mem_out.rd <= '0';

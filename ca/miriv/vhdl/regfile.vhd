@@ -45,8 +45,8 @@ architecture rtl of regfile is
 	signal data1_s, data2_s : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
 	
 begin
-	--Register File Read Logic:
-	sync : process(clk)
+	--Register Read Data:
+	reg_sync : process(clk)
 	begin
 		if rising_edge(clk) then
 			if (res_n = '0') then
@@ -61,6 +61,8 @@ begin
 		end if;
 	end process;
 	
+	
+	--Async Read Logic:
 	read_logic: process(all)
 	begin
 		if (stall = '0') then
@@ -88,7 +90,7 @@ begin
 	end process;
 
 	
-	--Register File Write Logic:
+	--Sync Write Logic:
 	write_logic: process(clk)
 	begin
 		if rising_edge(clk) then
