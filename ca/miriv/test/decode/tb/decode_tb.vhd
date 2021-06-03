@@ -83,23 +83,11 @@ architecture bench of tb is
 		return result;
 	end function;
 	
---	procedure check_output(output_ref : output_t) is
---		variable passed : boolean;
---	begin
---		passed := (outp = output_ref);
---
---		if not passed then
---			report "FAILED: "&"op="&to_string(inp.op.memread)&to_string(inp.op.memwrite)&to_string(inp.op.memtype)& lf
---			& "**     expected: R=" & to_string(output_ref.R) & " B=" & to_string(output_ref.B) & " XL=" & to_string(output_ref.XL) & " XS=" & to_string(output_ref.XS) & " M Address=" & to_string(output_ref.M.address)
---			& " M.wr=" & to_string(output_ref.M.wr)& " M.rd=" & to_string(output_ref.M.rd)& " M.byteena=" & to_string(output_ref.M.byteena)& " M.wrdata=" & to_string(output_ref.M.wrdata)& lf
---			& "**     actual:   R=" & to_string(outp.R)       & " B=" & to_string(outp.B) 		& " XL=" & to_string(outp.XL) 		& " XS=" & to_string(outp.XS) 		& " M Address=" & to_string(outp.M.address) 
---			& " M.wr=" & to_string(outp.M.wr)& 		  " M.rd=" & to_string(outp.M.rd)& 		  " M.byteena=" & to_string(outp.M.byteena)& 			" M.wrdata=" & to_string(outp.M.wrdata)& lf
---			severity error;
---		else
---			/*report " PASSED: "&"op="&to_string(op)& lf
---			severity note;*/
---		end if;
---	end procedure;
+	procedure check_output(output_ref : output_t) is
+		variable passed : boolean;
+	begin
+		passed := (outp = output_ref);
+	end procedure;
 
 begin
 	--Instance of UUT:
@@ -143,26 +131,18 @@ begin
 	end process;
 
 	--Check and compare output of UUT:
---	output_checker : process
---		variable fstatus: file_open_status;
---		variable output_ref : output_t;
---	begin
---		file_open(fstatus, output_ref_file, "testdata/output.txt", READ_MODE);
---
---		wait until res_n = '1';
---		timeout(1, CLK_PERIOD);
---
---		while not endfile(output_ref_file) loop
---			output_ref := read_next_output(output_ref_file);
---			report "TEST:"&" A=" &to_string(inp.A)&" W="&to_string(inp.W)&" D="&to_string(to_std_logic_vector(inp.D))& lf;
---			wait until falling_edge(clk);
---			check_output(output_ref);
---			wait until rising_edge(clk);	
---		end loop;
---		
---		stop <= true;
---		wait;
---	end process;
+	output_checker : process
+		variable fstatus: file_open_status;
+		variable output_ref : output_t;
+	begin
+		file_open(fstatus, output_ref_file, "testdata/output.txt", READ_MODE);
+
+		wait until res_n = '1';
+		timeout(1, CLK_PERIOD);
+		
+		stop <= true;
+		wait;
+	end process;
 	
 
 	generate_clk : process
