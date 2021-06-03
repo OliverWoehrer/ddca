@@ -89,7 +89,7 @@ begin
 				reg1 <= REGFILE_RESET;
 				reg2 <= REGFILE_RESET;
 			else
-				if (stall = '0') and (wraddr /= std_logic_vector(to_unsigned(0,REG_BITS))) then -- only update register values when not stalled!
+				if (stall = '0') and (wraddr /= std_logic_vector(to_unsigned(0,REG_BITS))) and (regwrite = '1') then -- only update register values when not stalled!
 					reg1(to_integer(unsigned(wraddr))) <= wrdata;
 					reg2(to_integer(unsigned(wraddr))) <= wrdata;
 				end if;

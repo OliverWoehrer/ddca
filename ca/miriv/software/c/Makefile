@@ -13,6 +13,7 @@ all: helloworld md5
 
 helloworld: helloworld.imem.mif helloworld.dmem.mif
 md5: md5.imem.mif md5.dmem.mif
+test: test.imem.mif test.dmem.mif
 
 helloworld.elf: libc.a crt0.o helloworld.o
 	${LD} $^ -L. -lc -o $@
@@ -20,7 +21,8 @@ helloworld.elf: libc.a crt0.o helloworld.o
 md5.elf: libc.a crt0.o md5.o md5main.o
 	${LD} $^ -L. -lc -o $@
 
-
+test.elf: libc.a crt0.o test.o
+	${LD} $^ -L. -lc -o $@
 
 
 %.elf : libc.a crt0.o  %.o
