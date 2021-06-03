@@ -224,10 +224,10 @@ begin
 	begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
-			instr_s <= (others => '0');
-			pc_s <= (others => '0');
+			instr_s <= NOP_INST;
+			pc_s <= ZERO_PC;
 		elsif flush = '1' then
-			instr_s(6 downto 0) <= OPC_NOP;
+			instr_s <= NOP_INST;
 		elsif stall = '0' then
 			instr_s <= instr;
 			pc_s <= pc_in;
@@ -244,7 +244,7 @@ begin
 		exec_op.alusrc1 <= '0';
 		exec_op.alusrc2 <= '0';
 		exec_op.alusrc3 <= '0';
-		exec_op.imm <= (others => '0');
+		exec_op.imm <= ZERO_DATA;
 		wb_op.write <= '0';
 		wb_op.src <= WBS_ALU;
 		mem_op <= MEM_NOP;
