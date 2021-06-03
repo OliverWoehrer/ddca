@@ -26,37 +26,37 @@ entity mem is
 		zero          : in  std_logic;
 
 		-- to EXEC (forwarding)
-		reg_write     : out reg_write_type;
+		reg_write     : out reg_write_type := REG_NOP;
 
 		-- to FETCH
-		pc_new_out    : out pc_type:= (others => '0');
-		pcsrc         : out std_logic;
+		pc_new_out    : out pc_type := ZERO_PC;
+		pcsrc         : out std_logic := '0';
 
 		-- to WB
-		wbop_out      : out wb_op_type;
-		pc_old_out    : out pc_type;
-		aluresult_out : out data_type;
-		memresult     : out data_type;
+		wbop_out      : out wb_op_type := WB_NOP;
+		pc_old_out    : out pc_type := ZERO_PC;
+		aluresult_out : out data_type := ZERO_DATA;
+		memresult     : out data_type := ZERO_DATA;
 
 		-- memory controller interface
 		mem_out       : out mem_out_type;
 		mem_in        : in  mem_in_type;
 
 		-- exceptions
-		exc_load      : out std_logic;
-		exc_store     : out std_logic
+		exc_load      : out std_logic := '0';
+		exc_store     : out std_logic := '0'
 	);
 end entity;
 
 architecture rtl of mem is
 
-	signal mem_op_s     : mem_op_type; 			--branch, mem(memread, memwrite, memtype)
-	signal wbop_s       : wb_op_type;			--rd, write, src
-	signal pc_new_s     : pc_type;
-	signal pc_old_s     : pc_type;
-	signal aluresult_s  : data_type;
-	signal wrdata_s     : data_type;
-	signal zero_s       : std_logic;
+	signal mem_op_s     : mem_op_type := MEM_NOP; 			--branch, mem(memread, memwrite, memtype)
+	signal wbop_s       : wb_op_type := WB_NOP;			--rd, write, src
+	signal pc_new_s     : pc_type := ZERO_PC;
+	signal pc_old_s     : pc_type := ZERO_PC;
+	signal aluresult_s  : data_type := ZERO_DATA;
+	signal wrdata_s     : data_type := ZERO_DATA;
+	signal zero_s       : std_logic := '0';
 
 begin
 	reg_write		<= REG_NOP;
@@ -70,10 +70,10 @@ begin
 		if res_n = '0' then
 			mem_op_s 	<= MEM_NOP;
 			wbop_s		<= WB_NOP;
-			pc_new_s 	<= (others => '0');
-			pc_old_s		<= (others => '0');
-			aluresult_s <= (others => '0');
-			wrdata_s		<= (others => '0');
+			pc_new_s 	<= ZERO_PC;
+			pc_old_s		<= ZERO_PC;
+			aluresult_s <= ZERO_DATA
+			wrdata_s		<= ZERO_DATA;
 			zero_s		<= '0';
 		elsif flush = '1' then
 			mem_op_s 	<= MEM_NOP;

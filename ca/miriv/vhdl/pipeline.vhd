@@ -25,20 +25,20 @@ architecture impl of pipeline is
 	
 	--fetch
 	signal mem_busy_from_fetch_s		: std_logic := '0';
-	signal pc_from_fetch_s				: pc_type := (others => '0');
-	signal instr_from_fetch_s			: instr_type := (others => '0');
+	signal pc_from_fetch_s				: pc_type := ZERO_PC;
+	signal instr_from_fetch_s			: instr_type := NOP_INST;
 	
 	--decode
-	signal pc_from_decode_s				: pc_type := (others => '0');
+	signal pc_from_decode_s				: pc_type := ZERO_PC;
 	signal exec_op_from_decode_s		: exec_op_type := EXEC_NOP;
 	signal mem_op_from_decode_s		: mem_op_type := MEM_NOP;
 	signal wb_op_from_decode_s			: wb_op_type := WB_NOP;
 	
 	--execute 
-	signal pc_old_from_execute_s		: pc_type := (others => '0');
-	signal pc_new_from_execute_s		: pc_type := (others => '0');
-	signal aluresult_from_execute_s  : data_type := (others => '0');
-	signal wrdata_from_execute_s		: data_type := (others => '0');
+	signal pc_old_from_execute_s		: pc_type := ZERO_PC;
+	signal pc_new_from_execute_s		: pc_type := ZERO_PC;
+	signal aluresult_from_execute_s  : data_type := ZERO_DATA;
+	signal wrdata_from_execute_s		: data_type := ZERO_DATA;
 	signal zero_from_execute_s			: std_logic := '0';
 	signal mem_op_from_execute_s		: mem_op_type := MEM_NOP;
 	signal wb_op_from_execute_s		: wb_op_type := WB_NOP;
@@ -48,12 +48,12 @@ architecture impl of pipeline is
 	signal reg_write_from_mem_s		: reg_write_type := REG_NOP;
 	
 	signal pcsrc							: std_logic := '0';
-	signal pc_from_mem_s					: pc_type := (others => '0');
+	signal pc_from_mem_s					: pc_type := ZERO_PC;
 	
 	signal wbop_from_mem_s 				: wb_op_type := WB_NOP;
-	signal pc_old_from_mem_s    		: pc_type := (others => '0');
-	signal aluresult_from_mem_s 		: data_type := (others => '0');
-	signal memresult_from_mem_s     	: data_type := (others => '0');
+	signal pc_old_from_mem_s    		: pc_type := ZERO_PC;
+	signal aluresult_from_mem_s 		: data_type := ZERO_DATA;
+	signal memresult_from_mem_s     	: data_type := ZERO_DATA;
 	
 	--wb
 	signal reg_write_from_wb_s			: reg_write_type := REG_NOP;

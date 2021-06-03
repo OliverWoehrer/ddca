@@ -25,9 +25,9 @@ end entity;
 
 architecture rtl of wb is
 	signal op_s				: wb_op_type := WB_NOP;
-	signal aluresult_s	: data_type := (others => '0');
-	signal memresult_s	: data_type := (others => '0');
-	signal pc_old_s		: pc_type := (others => '0');
+	signal aluresult_s	: data_type := ZERO_DATA;
+	signal memresult_s	: data_type := ZERO_DATA;
+	signal pc_old_s		: pc_type := ZERO_PC;
 begin
 	mux : process(all)
 	begin
@@ -48,6 +48,9 @@ begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
 			op_s <= WB_NOP;
+			aluresult_s	<= ZERO_DATA;
+			memresult_s	<= ZERO_DATA;
+			pc_old_s		<= ZERO_PC;
 		elsif flush = '1' then
 			op_s <= WB_NOP;
 		elsif stall = '0' then

@@ -28,8 +28,6 @@ architecture rtl of memu is
 begin
 	M.address <= A(15 downto 2);
 	B <= '1' when (D.busy = '1') or (op.memread = '1' and XL <= '1') else '0';
-	
-	
 	store_excep: process(all)
 	begin
 		if op.memwrite = '1' then

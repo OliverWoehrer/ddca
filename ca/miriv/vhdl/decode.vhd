@@ -34,7 +34,7 @@ entity decode is
 		reg_write  : in reg_write_type;									--	write, reg, data  für regfile
 
 		-- towards next stages
-		pc_out     : out pc_type := (others => '0');					-- vec 
+		pc_out     : out pc_type := ZERO_PC;					-- vec 
 		exec_op    : out exec_op_type := EXEC_NOP;					-- aluop, alusrc1[rs1 or PC], alusrc2[rs2 or imm], alusrc3, rs1, rs2, readdata1, readdata2, imm
 		mem_op     : out mem_op_type := MEM_NOP;						-- branch, mem(memread, memwrite, memtype)
 		wb_op      : out wb_op_type := WB_NOP;							-- rd, write, src
@@ -59,12 +59,12 @@ architecture rtl of decode is
 	constant OPC_OP 		: std_logic_vector(6 downto 0) := "0110011";
 	constant OPC_NOP		: std_logic_vector(6 downto 0) := "0001111";
 
-	signal instr_s 		: instr_type := (others => '0');
-	signal pc_s				: pc_type := (others => '0');
+	signal instr_s 		: instr_type := NOP_INST;
+	signal pc_s				: pc_type := ZERO_PC;
 	
-	signal opcode			: std_logic_vector(6 downto 0);
-	signal funct7 			: std_logic_vector(6 downto 0);
-	signal funct3 			: std_logic_vector(2 downto 0);
+	signal opcode			: std_logic_vector(6 downto 0) := (others => '0');
+	signal funct7 			: std_logic_vector(6 downto 0) := (others => '0');
+	signal funct3 			: std_logic_vector(2 downto 0) := (others => '0');
 	
 	function shamt_from_inst_format_I(inst : std_logic_vector) return std_logic_vector is
 		variable imm : std_logic_vector(31 downto 0);
