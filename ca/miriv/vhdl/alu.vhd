@@ -22,7 +22,7 @@ entity alu is
 	port (
 		op   : in  alu_op_type;
 		A, B : in  data_type;
-		R    : out data_type := (others => '0');
+		R    : out data_type := ZERO_DATA;
 		Z    : out std_logic := '0'
 	);
 end alu;

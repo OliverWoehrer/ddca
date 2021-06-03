@@ -1,3 +1,11 @@
+/*
+[wb.vhd] WRITE BACK STAGE:
+This unit writes back the result of the ALU operation (aluresult) or the data loaded
+from the memory.
+*/
+----------------------------------------------------------------------------------
+--                                LIBRARIES                                     --
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -5,6 +13,9 @@ use ieee.numeric_std.all;
 use work.core_pkg.all;
 use work.op_pkg.all;
 
+--------------------------------------------------------------------------------
+--                                 ENTITY                                     --
+--------------------------------------------------------------------------------
 entity wb is
 	port (
 		clk        : in  std_logic;
@@ -23,27 +34,20 @@ entity wb is
 	);
 end entity;
 
+--------------------------------------------------------------------------------
+--                               ARCHITECTURE                                 --
+--------------------------------------------------------------------------------
 architecture rtl of wb is
+	--Internal Registered Signals:
 	signal op_s				: wb_op_type := WB_NOP;
 	signal aluresult_s	: data_type := ZERO_DATA;
 	signal memresult_s	: data_type := ZERO_DATA;
 	signal pc_old_s		: pc_type := ZERO_PC;
+	
 begin
-	mux : process(all)
-	begin
-		reg_write.write <= op_s.write;
-		reg_write.reg <= op_s.rd;
-		case op_s.src is
-		when WBS_MEM =>
-			reg_write.data <= memresult_s;
-		when WBS_OPC =>
-			reg_write.data <= to_data_type(pc_old_s);
-		when others => 							--WBS_ALU
-			reg_write.data <= aluresult_s;
-		end case;
-	end process;
 
-	reg : process 
+	--Register internal Signals:
+	reg_sync : process 
 	begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
@@ -61,7 +65,23 @@ begin
 		else
 			-- keep old register values
 		end if;
-	end process reg;
+	end process;
+	
+	
+	--Async Write Back Logic:
+	writeback_logic : process(all)
+	begin
+		reg_write.write <= op_s.write;
+		reg_write.reg <= op_s.rd;
+		case op_s.src is
+		when WBS_MEM =>
+			reg_write.data <= memresult_s;
+		when WBS_OPC =>
+			reg_write.data <= to_data_type(pc_old_s);
+		when others => 							--WBS_ALU
+			reg_write.data <= aluresult_s;
+		end case;
+	end process;
 	
 	
 end architecture;

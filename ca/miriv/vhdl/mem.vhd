@@ -1,3 +1,11 @@
+/*
+[mem.vhd] MEMORY AND BRANCH:
+This unit instantiates the Memory Unit and applies its input signals according to the
+memory operation codes. It also brnached and sets the program counter accordingly
+*/
+----------------------------------------------------------------------------------
+--                                LIBRARIES                                     --
+----------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -6,6 +14,9 @@ use work.core_pkg.all;
 use work.mem_pkg.all;
 use work.op_pkg.all;
 
+--------------------------------------------------------------------------------
+--                                 ENTITY                                     --
+--------------------------------------------------------------------------------
 entity mem is
 	port (
 		clk           : in  std_logic;
@@ -48,8 +59,11 @@ entity mem is
 	);
 end entity;
 
+--------------------------------------------------------------------------------
+--                               ARCHITECTURE                                 --
+--------------------------------------------------------------------------------
 architecture rtl of mem is
-
+	--Internal Registered Signals:
 	signal mem_op_s     : mem_op_type := MEM_NOP; 			--branch, mem(memread, memwrite, memtype)
 	signal wbop_s       : wb_op_type := WB_NOP;			--rd, write, src
 	signal pc_new_s     : pc_type := ZERO_PC;
@@ -59,12 +73,15 @@ architecture rtl of mem is
 	signal zero_s       : std_logic := '0';
 
 begin
+	--Permanent Hardwires:
 	reg_write		<= REG_NOP;
 	wbop_out			<= wbop_s;
 	pc_old_out		<= pc_old_s;
 	aluresult_out	<= aluresult_s;
 	
-	reg : process 
+	
+	--Register internal Signals:
+	reg_sync : process 
 	begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
@@ -90,9 +107,11 @@ begin
 			mem_op_s.mem.memread <= '0';
 			mem_op_s.mem.memwrite <= '0';
 		end if;
-	end process reg;
+	end process;
 	
-	branch : process(all)
+	
+	--Async Branch Logic:
+	branch_logic : process(all)
 	begin
 		case mem_op_s.branch is
 			when BR_BR =>
@@ -118,10 +137,10 @@ begin
 				pcsrc <= '0';
 				pc_new_out <= pc_old_s;
 		end case;
-	end process branch;
+	end process;
 	
 
-
+	--Instance of Memory Unit (MemU):
 	memu_inst : entity work.memu(rtl)
 	port map(
 		op => mem_op_s.mem,
@@ -136,7 +155,5 @@ begin
 		D => mem_in,
 		M => mem_out
 	);
-	
-	
 	
 end architecture;

@@ -31,6 +31,7 @@ package core_pkg is
 	constant ZERO_DATA        : data_type    := (others => '0');
 	constant ZERO_PC          : pc_type      := (others => '0');
 	constant NOP_INST         : instr_type   := X"00000013";
+	constant NOP_INST_INV		: instr_type   := X"13000000";
 
 	pure function to_data_type(pc : pc_type) return data_type;
 	pure function to_pc_type(data : data_type) return pc_type;

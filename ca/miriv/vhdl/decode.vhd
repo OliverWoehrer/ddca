@@ -48,6 +48,7 @@ end entity;
 --                               ARCHITECTURE                                 --
 --------------------------------------------------------------------------------
 architecture rtl of decode is
+	--Constants for Operatio Codes (OPcode):
 	constant OPC_LUI 		: std_logic_vector(6 downto 0) := "0110111";
 	constant OPC_AUIPIC	: std_logic_vector(6 downto 0) := "0010111";
 	constant OPC_JAL 		: std_logic_vector(6 downto 0) := "1101111";
@@ -59,9 +60,11 @@ architecture rtl of decode is
 	constant OPC_OP 		: std_logic_vector(6 downto 0) := "0110011";
 	constant OPC_NOP		: std_logic_vector(6 downto 0) := "0001111";
 
+	--Internal Registered Signals:
 	signal instr_s 		: instr_type := NOP_INST;
 	signal pc_s				: pc_type := ZERO_PC;
 	
+	--Internal Temporary Signals:
 	signal opcode			: std_logic_vector(6 downto 0) := (others => '0');
 	signal funct7 			: std_logic_vector(6 downto 0) := (others => '0');
 	signal funct3 			: std_logic_vector(2 downto 0) := (others => '0');
@@ -187,7 +190,7 @@ architecture rtl of decode is
 	end function;
 	
 begin
-	
+	--Permanent Hardwires:
 	opcode	<= instr_s(6 downto 0);
 	funct7 	<= instr_s(31 downto 25);
 	funct3 	<= instr_s(14 downto 12);
@@ -196,6 +199,8 @@ begin
 	wb_op.rd <= instr_s(11 downto 7);
 	pc_out <= pc_s;
 
+	
+	--Instance of Register File Entity:
 	regfile_inst : entity work.regfile
 	port map (
 		clk			=> clk,              
@@ -210,17 +215,9 @@ begin
 		regwrite    => reg_write.write     
 	);
 	
---	debug : process(all)
---	begin
---		if rising_edge(clk) and (reg_write.write = '1') then
---			if (unsigned(reg_write.reg) /= 0) then
---				report "REGFILE["& to_hstring(reg_write.reg) &"] = "&to_hstring(reg_write.data)&lf severity note;
---			end if;
---		end if;
---		
---	end process;
 
-	reg : process 
+	--Register internal Signals:
+	reg_sync : process 
 	begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
@@ -237,6 +234,8 @@ begin
 		end if;
 	end process;
 	
+	
+	--Async Decode Logic:
 	decode_logic : process (all)
 	begin
 		exc_dec <= '0';
