@@ -62,24 +62,17 @@ architecture rtl of exec is
 	signal alu_A_s : data_type := ZERO_DATA;
 	signal alu_B_s : data_type := ZERO_DATA;
 	
+	--Forwarded signals:
+	signal do_fwd_A, do_fwd_B : std_logic := '0';
+	signal fwd_A, fwd_B : data_type := ZERO_DATA;
+	
 begin
 	--Permanent Hardwires:
 	pc_old_out <= pc_s;
-	exec_op <= EXEC_NOP; -- can be ignored for now
+	exec_op <= op_s;
 	memop_out <= memop_s;
 	wbop_out <= wbop_s;
-	wrdata <= op_s.readdata2; -- forward signal to Memory Stage:
-	
-	
-	--Instance of Arithmetic Logical Unit (ALU):
-	alu_inst : entity work.alu(rtl)
-		port map(
-			op	=> op_s.aluop,
-			A	=>	alu_A_s,
-			B	=> alu_B_s,
-			R	=> aluresult,
-			Z	=> zero
-		);
+	wrdata <= op_s.readdata2; -- forward signal to MEM stage
 	
 	
 	--Register internal Signals:
@@ -110,10 +103,12 @@ begin
 	
 	--Async Exec Logic:
 	exec_logic: process(all)
-		variable selector : std_logic_vector(2 downto 0) := "000";
+		variable input_selector : std_logic_vector(2 downto 0) := "000";
+		variable alu_selector_A : std_logic_vector(1 downto 0) := "00";
+		variable alu_selector_B : std_logic_vector(1 downto 0) := "00";
 	begin
-		selector := op_s.alusrc1 & op_s.alusrc2 & op_s.alusrc3;
-		case (selector) is
+		input_selector := op_s.alusrc1 & op_s.alusrc2 & op_s.alusrc3;
+		case (input_selector) is
 			when "101" => -- special case: JAL
 				alu_A_s <= to_data_type(pc_s);
 				alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
@@ -123,22 +118,61 @@ begin
 				alu_B_s <= std_logic_vector(to_unsigned(4,DATA_WIDTH));
 				pc_new_out <= to_pc_type(std_logic_vector(unsigned(op_s.imm) + unsigned(op_s.readdata1)));
 			when others =>
-				--ALU input signals:
-				case op_s.alusrc1 is -- select input A
-					when '1' => alu_A_s <= to_data_type(pc_s); --TODO: changed to pc_old_out, needs to be tested
-					when others => alu_A_s <= op_s.readdata1;
+				--ALU input A signals:
+				alu_selector_A :=  op_s.alusrc1 & do_fwd_A;
+				case alu_selector_A is -- select input A
+					when "00" => alu_A_s <= op_s.readdata1;
+					when "10" => alu_A_s <= to_data_type(pc_s);
+					when others => alu_A_s <= fwd_A;
 				end case;
-				case op_s.alusrc2 is -- select input B
-					when '1' => alu_B_s <= op_s.imm;
-					when others => alu_B_s <= op_s.readdata2;
+				
+				--ALU input B signals:
+				alu_selector_B :=  op_s.alusrc2 & do_fwd_B;
+				case alu_selector_B is -- select input B
+					when "00" => alu_B_s <= op_s.readdata2;
+					when "10" => alu_B_s <= op_s.imm;
+					when others => alu_B_s <= fwd_B;
 				end case;
 				
 				--Addition for PC:
 				case op_s.alusrc3 is
-					when '1' => pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + signed(op_s.imm)));
-					when others => pc_new_out <= pc_s;
+					when '0' => pc_new_out <= pc_s;
+					when others => pc_new_out <= to_pc_type(std_logic_vector(signed(pc_s) + signed(op_s.imm)));
 				end case;
 		end case;
 	end process;
+	
+	
+	--Instance of Arithmetic Logical Unit (ALU):
+	alu_inst : entity work.alu(rtl)
+	port map(
+		op	=> op_s.aluop,
+		A	=>	alu_A_s,
+		B	=> alu_B_s,
+		R	=> aluresult,
+		Z	=> zero
+	);
+	
+	
+	--Instance of FWD Unit (used for ALU input A):
+	fwd_A_inst : entity work.fwd(rtl)
+	port map (
+		reg_write_mem => reg_write_mem,
+		reg_write_wb => reg_write_wr,
+		reg => op_s.rs1,
+		val => fwd_A,
+		do_fwd => do_fwd_A
+	);
+	
+	
+	--Instance of FWD Unit (used for ALU input B):
+	fwd_B_inst : entity work.fwd(rtl)
+	port map (
+		reg_write_mem => reg_write_mem,
+		reg_write_wb => reg_write_wr,
+		reg => op_s.rs2,
+		val => fwd_B,
+		do_fwd => do_fwd_B
+	);
 
 end architecture;

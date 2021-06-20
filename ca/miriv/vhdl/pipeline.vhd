@@ -133,7 +133,7 @@ begin
 		-- FWD
 		exec_op       => open,
 		reg_write_mem => reg_write_from_mem_s,
-		reg_write_wr  => REG_NOP
+		reg_write_wr  => reg_write_from_wb_s
 	);
 	
 	memory_inst : entity work.mem

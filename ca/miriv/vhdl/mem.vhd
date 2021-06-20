@@ -74,7 +74,9 @@ architecture rtl of mem is
 
 begin
 	--Permanent Hardwires:
-	reg_write		<= REG_NOP;
+	reg_write.write <= wbop_s.write;
+	reg_write.reg <= wbop_s.rd; -- ALU computes write address
+	reg_write.data <= aluresult_out;
 	wbop_out			<= wbop_s;
 	pc_old_out		<= pc_old_s;
 	aluresult_out	<= aluresult_s;

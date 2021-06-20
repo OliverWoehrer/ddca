@@ -20,7 +20,7 @@ compile:
 		exit 1; \
 	fi;
 
-sim: compile
+sim:
 	@vsim -c -t ps work.tb -quiet -do "run -all;quit -f" | grep -E "\*\*|Errors"
 
 sim_gui: compile

@@ -32,7 +32,7 @@ clean:
 compile:
 	@vsim -c -do "do scripts/compile.do;quit -f"
 
-sim: compile
+sim:
 	@vsim -c $(FILE_OPT) -t ps work.tb_cpu -quiet -do "run $(TIME);quit -f" #| grep "\*\*"
 	@cat output.txt
 

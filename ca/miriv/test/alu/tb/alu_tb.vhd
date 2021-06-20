@@ -149,7 +149,7 @@ begin
 
 		while not endfile(output_ref_file) loop
 			output_ref := read_next_output(output_ref_file);
-			report "TEST:"&" A=" &to_string(inp.A)&" B="&to_string(inp.B)& lf;
+			--report "TEST:"&" A=" &to_string(inp.A)&" B="&to_string(inp.B)& lf;
 			for i in 0 to 10 loop
 				wait until falling_edge(clk);
 				check_output(output_ref(i));
