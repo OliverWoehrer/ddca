@@ -21,7 +21,7 @@ entity pipeline is
 end entity;
 
 architecture impl of pipeline is
-	signal stall 							: std_logic := '0';
+	signal memory_busy_s					: std_logic := '0';
 	
 	--fetch
 	signal stall_fetch_s					: std_logic := '0';
@@ -73,13 +73,13 @@ architecture impl of pipeline is
 	signal pcsrc_from_crtl_s			: std_logic := '0';
 	
 begin
-	stall <= mem_busy_from_fetch_s or mem_busy_from_mem_s;
+	memory_busy_s <= mem_busy_from_fetch_s or mem_busy_from_mem_s;
 
 	fetch_inst : entity work.fetch
 	port map (
 		clk       => clk,
 		res_n     => res_n,
-		stall     => stall or stall_fetch_s,
+		stall     => stall_fetch_s,
 		flush     => flush_fetch_s,
 		mem_busy  => mem_busy_from_fetch_s,
 		
@@ -100,7 +100,7 @@ begin
 	port map(
 		clk       	=> clk,
 		res_n      	=> res_n,
-		stall      	=> stall or stall_dec_s,
+		stall      	=> stall_dec_s,
 		flush      	=> flush_dec_s,
 	
 		-- from fetch
@@ -124,7 +124,7 @@ begin
 	port map(
 		clk           => clk,
 		res_n         => res_n,
-		stall         => stall or stall_exec_s,
+		stall         => stall_exec_s,
 		flush         => flush_exec_s,
 
 		-- from DEC
@@ -153,7 +153,7 @@ begin
 	port map(
 		clk           	=> clk,
 		res_n        	=> res_n,
-		stall         	=> stall or stall_mem_s,
+		stall         	=> stall_mem_s,
 		flush         	=> flush_mem_s,
 
 		-- to Ctrl
@@ -194,7 +194,7 @@ begin
 	port map(
 		clk        		=> clk,
 		res_n      		=> res_n,
-		stall      		=> stall or stall_wb_s,
+		stall      		=> stall_wb_s,
 		flush      		=> flush_wb_s,
 
 		-- from MEM
@@ -207,40 +207,13 @@ begin
 		reg_write  		=> reg_write_from_wb_s
 	);
 	
-	
-	foward1_inst : entity work.fwd
-	port map(
-		-- from Mem
-		reg_write_mem 	=> reg_write_from_mem_s,
 
-		-- from WB
-		reg_write_wb  	=> reg_write_from_wb_s,
-
-		-- from/to EXEC
-		reg    			=> exec_op_from_execute_s.rs1,
-		val    			=> open,
-		do_fwd 			=> open
-	);
-	
-	foward2_inst : entity work.fwd
-	port map(
-		-- from Mem
-		reg_write_mem 	=> reg_write_from_mem_s,
-
-		-- from WB
-		reg_write_wb  	=> reg_write_from_wb_s,
-
-		-- from/to EXEC
-		reg    			=> exec_op_from_execute_s.rs2,
-		val    			=> open,
-		do_fwd 			=> open
-	);
 	
 	control_inst : entity work.ctrl
 	port map(
 		clk         	=> clk,
 		res_n       	=> res_n,
-		stall       	=> stall,
+		stall       	=> memory_busy_s,
 
 		stall_fetch 	=> stall_fetch_s,
 		stall_dec   	=> stall_dec_s,

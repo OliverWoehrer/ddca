@@ -3,18 +3,15 @@
 		.globl  _start
 
 _start:
-addi x1, x0, 1
-addi x2, x0, 2
-or x3, x1, x2
-addi x4, x0, 4
+addi x1, x0, 4
+addi x5, x0, 0
+addi x6, x0, 0
+sw x1, 0(x0)
 nop
 nop
 nop
-add x1,x1,x2
-add x1,x1,x3
-add x1,x1,x4
-nop
-nop
+lw x5, 0(x0)
+addi x6, x5, 7
 
 	.end _start
 	.size _start, .-_start
