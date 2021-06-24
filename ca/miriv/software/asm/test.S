@@ -12,6 +12,9 @@ nop
 nop
 lw x5, 0(x0)
 addi x6, x5, 7
+nop
+nop
+nop
 
 	.end _start
 	.size _start, .-_start

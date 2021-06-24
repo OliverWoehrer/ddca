@@ -51,98 +51,74 @@ begin
 	stall_wb <= stall_wb_s;
 	
 	
-	--Permanent Hardwires for flush signal:
-	/*
-	flush_fetch <= flush_pipeline_s;
-	flush_dec <= flush_pipeline_s;
-	flush_exec <= flush_pipeline_s;
-	flush_mem <= flush_pipeline_s;
-	flush_wb <= flush_pipeline_s;
-	*/
-	
-	
 	--Sync stall logic:
-	stall_logic: process(clk)
-	variable clk_cnt :natural := 0;
+	stall_logic: process(all)
 	begin
-		if rising_edge(clk) then
-			if res_n = '0' then
+		if res_n = '0' then
+			stall_fetch_s <= '0';
+			stall_dec_s <= '0';
+			stall_exec_s <= '0';
+			stall_mem_s <= '0';
+			stall_wb_s <= '0';
+		elsif (stall = '0') then
+			if (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG then
+				stall_fetch_s <= '1';
+				stall_dec_s <= '1';
+				stall_exec_s <= '0';
+				stall_mem_s <= '0'; 
+				stall_wb_s <= '0'; -- dont stall wb stage
+			else
 				stall_fetch_s <= '0';
 				stall_dec_s <= '0';
 				stall_exec_s <= '0';
 				stall_mem_s <= '0';
-				stall_wb_s <= '0';
-				clk_cnt := 0;
-			elsif (stall = '0') then
-				if (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG and clk_cnt = 0 then
-					stall_fetch_s <= '1';
-					stall_dec_s <= '1';
-					stall_exec_s <= '0';
-					stall_mem_s <= '0'; 
-					stall_wb_s <= '0'; -- dont stall wb stage
-					clk_cnt := clk_cnt + 1;
-				else
-					stall_fetch_s <= '0';
-					stall_dec_s <= '0';
-					stall_exec_s <= '0';
-					stall_mem_s <= '0';
-					stall_wb_s <= '0';	
-					clk_cnt := 0;
-				end if;
-			else
-				-- already stalled
-				stall_fetch_s <= '1';
-				stall_dec_s <= '1';
-				stall_exec_s <= '1';
-				stall_mem_s <= '1';
-				stall_wb_s <= '1';
+				stall_wb_s <= '0';	
 			end if;
+		else
+			-- already stalled
+			stall_fetch_s <= '1';
+			stall_dec_s <= '1';
+			stall_exec_s <= '1';
+			stall_mem_s <= '1';
+			stall_wb_s <= '1';
 		end if;
 	end process;
 	
-	flush_logic : process(clk)
-		variable clk_cnt :natural := 0;
+	flush_logic : process(all)
 	begin
-		if rising_edge(clk) then
-			if res_n = '0' then
+		if res_n = '0' then
+			flush_fetch <= '0';
+			flush_dec <= '0';
+			flush_exec <= '0';
+			flush_mem <= '0';
+			flush_wb <= '0';
+		elsif stall = '0' then
+			pcsrc_out <= pcsrc_in;
+			if (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG then
 				flush_fetch <= '0';
 				flush_dec <= '0';
-				flush_exec <= '0';
+				flush_exec <= '1';
 				flush_mem <= '0';
 				flush_wb <= '0';
-				clk_cnt := 0;
-			elsif stall = '0' then
-				pcsrc_out <= pcsrc_in;
-				if (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG and clk_cnt = 0 then
-					flush_fetch <= '0';
-					flush_dec <= '0';
-					flush_exec <= '1';
-					flush_mem <= '0';
-					flush_wb <= '0';
-					clk_cnt := clk_cnt +1;
-				elsif pcsrc_in = '1' then
-					flush_fetch <= '1';
-					flush_dec <= '1';
-					flush_exec <= '1';
-					flush_mem <= '1';
-					flush_wb <= '1';
-					clk_cnt := 0;
-				else
-					flush_fetch <= '0';
-					flush_dec <= '0';
-					flush_exec <= '0';
-					flush_mem <= '0';
-					flush_wb <= '0';
-					clk_cnt := 0;
-				end if;
+			elsif pcsrc_in = '1' then
+				flush_fetch <= '1';
+				flush_dec <= '1';
+				flush_exec <= '1';
+				flush_mem <= '1';
+				flush_wb <= '1';
 			else
 				flush_fetch <= '0';
 				flush_dec <= '0';
 				flush_exec <= '0';
 				flush_mem <= '0';
 				flush_wb <= '0';
-				-- already stalled
 			end if;
+		else -- already stalled
+			flush_fetch <= '0';
+			flush_dec <= '0';
+			flush_exec <= '0';
+			flush_mem <= '0';
+			flush_wb <= '0';
 		end if;
 	end process;
 end architecture;
