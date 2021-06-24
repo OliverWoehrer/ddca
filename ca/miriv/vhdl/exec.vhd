@@ -83,17 +83,17 @@ begin
 				op_s <= EXEC_NOP;
 				pc_s <= ZERO_PC;
 				memop_s <= MEM_NOP;
-				wbop_s <= WB_NOP;				
-			elsif (stall = '0') then
-				op_s <= op;
-				pc_s <= pc_in;
-				memop_s <= memop_in;
-				wbop_s <= wbop_in;
+				wbop_s <= WB_NOP;		
 			elsif (flush = '1') then
 				op_s <= EXEC_NOP;
 				pc_s <= ZERO_PC;
 				memop_s <= MEM_NOP;
 				wbop_s <= WB_NOP;
+			elsif (stall = '0') then
+				op_s <= op;
+				pc_s <= pc_in;
+				memop_s <= memop_in;
+				wbop_s <= wbop_in;
 			else
 				-- keep old register values
 			end if;

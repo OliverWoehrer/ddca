@@ -68,6 +68,9 @@ begin
 				pc_s <= ZERO_PC;
 				instr_s <= NOP_INST_INV;
 				reset_flag <= '1';
+			elsif (flush = '1') then
+				pc_s <= ZERO_PC;
+				instr_s <= NOP_INST_INV;
 			elsif (stall = '0') then
 				pc_s <= pc_new;
 				instr_s <= mem_in.rddata;
@@ -77,9 +80,6 @@ begin
 				if (stall_flag = '1') then
 					stall_flag <= '0'; -- reset stall_flag
 				end if;
-			elsif (flush = '1') then
-				pc_s <= ZERO_PC;
-				instr_s <= NOP_INST_INV;
 			else -- unit is stalled, store imem data in register
 				stall_flag <= '1';
 				instr_s <= mem_in.rddata;

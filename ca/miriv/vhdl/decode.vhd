@@ -228,7 +228,6 @@ begin
 		elsif stall = '0' then
 			instr_s <= instr;
 			pc_s <= pc_in;
-			
 		else
 			-- keep old register values
 		end if;
