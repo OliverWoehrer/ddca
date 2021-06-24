@@ -282,7 +282,7 @@ begin
 				exec_op.alusrc2 <= '1';
 				exec_op.alusrc3 <= '1';
 				wb_op.write <= '1';
-				wb_op.src <= WBS_OPC;
+				wb_op.src <= WBS_ALU;
 				
 			when OPC_BRANCH =>
 				--format B
