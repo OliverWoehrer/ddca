@@ -1,0 +1,60 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.mem_pkg.all;
+use work.cache_pkg.all;
+use work.tb_util_pkg.all;
+
+entity tb is
+end entity;
+
+architecture bench of tb is
+	--Basic instance signals
+	constant CLK_PERIOD : time := 10 ns;
+	signal clk : std_logic;
+	signal res_n : std_logic := '0';
+	signal index_s: c_index_type := (others => '0');
+	signal we_s: std_logic := '0';
+	signal we_repl_s : std_logic := '0';
+	signal mgmt_info_in_s : c_mgmt_info := C_MGMT_NOP;
+	signal mgmt_info_out_s : c_mgmt_info := C_MGMT_NOP;
+
+begin
+	--Instance of UUT:
+	mgmt_st_1w_inst : entity work.mgmt_st_1w_tb
+	generic map(
+		SETS_LD  => SETS_LD
+	)
+	port map(
+		clk    	=> clk,
+		res_n  	=> res_n,
+
+		index   => index_s,		
+		we      => we_s,
+		we_repl	=> we_repl_s,
+
+		mgmt_info_in  => mgmt_info_in_s,
+		mgmt_info_out => mgmt_info_out_s,
+	);
+	
+	--Read and apply input data:
+	stimulus : process
+		variable fstatus: file_open_status;
+	begin
+		--First iteration
+		res_n <= '0';
+		timeout(5, CLK_PERIOD);
+		res_n <= '1';
+		timeout(1, CLK_PERIOD);
+		wait;
+	end process;
+	
+
+	generate_clk : process
+	begin
+		clk_generate(clk, CLK_PERIOD, stop);
+		wait;
+	end process;
+
+end architecture;

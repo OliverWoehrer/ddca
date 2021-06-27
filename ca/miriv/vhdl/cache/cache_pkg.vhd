@@ -23,4 +23,11 @@ package cache_pkg is
 		replace : std_logic;
 		tag : c_tag_type;
 	end record;
+	
+	constant C_MGMT_NOP : c_mgmt_info := (
+		valid   		=> '1',
+		dirty   		=> '0',
+		replace   	=> '0',
+		tag 			=> (others => '0')
+	);
 end package;

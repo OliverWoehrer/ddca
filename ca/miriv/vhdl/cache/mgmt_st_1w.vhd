@@ -18,10 +18,12 @@ entity mgmt_st_1w is
 		we_repl	: in std_logic;
 
 		mgmt_info_in  : in c_mgmt_info;
-		mgmt_info_out : out c_mgmt_info
+		mgmt_info_out : out c_mgmt_info := C_MGMT_NOP
 	);
 end entity;
 
 architecture impl of mgmt_st_1w is
+	type info_array is array (SETS-1 downto 0) of c_mgmt_info;
+	signal set_array : info_array := (others => C_MGMT_NOP);
 begin
 end architecture;

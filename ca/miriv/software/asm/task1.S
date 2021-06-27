@@ -3,10 +3,11 @@
 		.globl  _start
 
 _start:
-loop:   j loop
-addi x1, x1, 1
-addi x2, x2, 1
-addi x3, x3, 1
+addi x1, x0, 7
+addi x2, x0, 5
+and x1, x2, x1
+nop
+nop
 
 	.end _start
 	.size _start, .-_start

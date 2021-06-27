@@ -1,0 +1,8 @@
+# vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full" 
+# Start time: 22:43:09 on Jun 27,2021
+# ** Warning: (vsim-8683) Uninitialized out port /tb/cache_inst/data_st_inst/data_out(31 downto 0) has no driver.
+# This port will contribute value (UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU) to the signal network.
+# do scripts/wave.do
+# run -all
+# wave zoom full
+# {0 ps} {283500 ps}

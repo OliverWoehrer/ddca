@@ -36,6 +36,14 @@ package mem_pkg is
 		byteena => (others => '1'),
 		wrdata  => (others => '0')
 	);
+	
+	constant MEM_OUT_NOP2 : mem_out_type := (
+		address => (others => 'X'),
+		rd      => '0',
+		wr      => '0',
+		byteena => (others => 'X'),
+		wrdata  => (others => 'X')
+	);
 
 	type mem_in_type is
 	record
@@ -46,6 +54,11 @@ package mem_pkg is
 	constant MEM_IN_NOP : mem_in_type := (
 		busy   => '0',
 		rddata => (others => '0')
+	);
+	
+	constant MEM_IN_NOP2 : mem_in_type := (
+		busy   => '0',
+		rddata => (others => 'X')
 	);
 
 	subtype mem_out_range_type is natural range DATA_WIDTH + ADDR_WIDTH + 1 + 1 + BYTEEN_WIDTH - 1 downto 0;

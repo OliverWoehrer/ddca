@@ -85,18 +85,18 @@ begin
 			flush_wb <= '0';
 		elsif stall = '0' then
 			pcsrc_out <= pcsrc_in;
-			if (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG then
-				flush_fetch <= '0';
-				flush_dec <= '0';
-				flush_exec <= '1';
-				flush_mem <= '0';
-				flush_wb <= '0';
-			elsif pcsrc_in = '1' then
+			if pcsrc_in = '1' then
 				flush_fetch <= '1';
 				flush_dec <= '1';
 				flush_exec <= '1';
 				flush_mem <= '1';
 				flush_wb <= '1';
+			elsif (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG then
+				flush_fetch <= '0';
+				flush_dec <= '0';
+				flush_exec <= '1';
+				flush_mem <= '0';
+				flush_wb <= '0';
 			else
 				flush_fetch <= '0';
 				flush_dec <= '0';

@@ -22,7 +22,7 @@ entity data_st is
 
 		data_in    : in mem_data_type;
 		data_out   : out mem_data_type
-);
+	);
 end entity;
 
 architecture impl of data_st is
