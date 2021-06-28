@@ -63,7 +63,7 @@ begin
 		
 		timeout(2, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
-		cpu_to_cache.address <= 14x"0F00";
+		cpu_to_cache.address <= 14x"0F0F";
 		timeout(1, CLK_PERIOD);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');

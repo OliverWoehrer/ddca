@@ -83,32 +83,29 @@ begin
 	
 	output: process (all)
 	begin
-		cache_to_mem.rd <= '0';
+		cache_to_cpu <= MEM_IN_NOP2;
+		cache_to_mem <= MEM_OUT_NOP2;
 		case state is
 			when IDLE =>
-				cache_to_cpu.busy <= '0';
-				cache_to_cpu.rddata <= (others => 'X');
+				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
+					cache_to_mem <= cpu_to_cache;
+					cache_to_cpu <= mem_to_cache;
+				end if;
 			when READ_CACHE =>
-				elsif mgmt_st_hit_out_s = '1' then
-					cache_to_cpu.busy <= '0';
-					cache_to_cpu.rddata <= (others => '0');
+				if mgmt_st_hit_out_s = '1' then
+					cache_to_cpu.rddata <= data_st_data_out_s;
 				else
 					cache_to_cpu.busy <= '1';
-					cache_to_cpu.rddata <= (others => 'X');
 				end if;
 			when READ_MEM_START =>
 				cache_to_cpu.busy <= '1';
-				cache_to_cpu.rddata <= (others => 'X');
 				cache_to_mem <= cpu_to_cache;
 				cache_to_mem.rd <= '1';
 			when READ_MEM =>
-				cache_to_cpu.busy <= mem_to_cache.busy;
-				cache_to_cpu.rddata <= mem_to_cache.rddata;
-			--when WRITE_BACK_START =>
-			--when WRITE_BACK =>
+				cache_to_cpu <= mem_to_cache;
+			when WRITE_BACK_START =>
+			when WRITE_BACK =>
 			when others =>
-				cache_to_cpu.busy <= '0';
-				cache_to_cpu.rddata <= (others => 'X');
 		end case;
 	end process;
 	
@@ -117,11 +114,9 @@ begin
 		state_next <= state;
 		case state is
 			when IDLE =>
---				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
---					cache_to_mem <= cpu_to_cache; inferring latch
---					cache_to_cpu <= mem_to_cache;
---					state_next <= IDLE;
-				if cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
+				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
+					state_next <= IDLE;
+				elsif cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
 					--read access
 					state_next <= READ_CACHE;
 				elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
@@ -158,21 +153,21 @@ begin
 		WAYS_LD  	=>WAYS_LD
 	)
 	port map (
-		clk   		=> clk 						,--std_logic
-		res_n 		=> res_n						,--std_logic
+		clk   		=> clk 																					,--std_logic
+		res_n 		=> res_n																					,--std_logic
 
-		index 		=> mgmt_st_index_s		,--c_index_type
-		wr    		=>	mgmt_st_wr_s			,--std_logic
-		rd    		=>	mgmt_st_rd_s			,--std_logic
+		index 		=> cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)							,--c_index_type
+		wr    		=>	cpu_to_cache_s.wr																	,--std_logic
+		rd    		=>	cpu_to_cache_s.rd																	,--std_logic
 
-		valid_in    => mgmt_st_valid_in_s	,--std_logic
-		dirty_in    => mgmt_st_dirty_in_s	,--std_logic
+		valid_in    => mgmt_st_valid_in_s																,--std_logic
+		dirty_in    => mgmt_st_dirty_in_s																,--std_logic
 		tag_in      => cpu_to_cache_s.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE)	,--c_tag_type
-		way_out     => mgmt_st_way_out_s		,--c_way_type
-		valid_out   => mgmt_st_valid_out_s	,--std_logic
-		dirty_out   => mgmt_st_dirty_out_s	,--std_logic
-		tag_out     => mgmt_st_tag_out_s		,--c_tag_type
-		hit_out     =>	mgmt_st_hit_out_s   	--std_logic
+		way_out     => mgmt_st_way_out_s																	,--c_way_type
+		valid_out   => mgmt_st_valid_out_s																,--std_logic
+		dirty_out   => mgmt_st_dirty_out_s																,--std_logic
+		tag_out     => mgmt_st_tag_out_s																	,--c_tag_type
+		hit_out     =>	mgmt_st_hit_out_s   																--std_logic
 	);
 	
 	data_st_inst: entity work.data_st
