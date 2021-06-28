@@ -125,7 +125,6 @@ begin
 					state_next <= IDLE;
 				end if;
 			when READ_CACHE =>
-				
 				if mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '0' then
 					state_next <= IDLE;
 				elsif mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '1' then
@@ -176,15 +175,15 @@ begin
 		WAYS_LD  	=>WAYS_LD
 	)
 	port map(
-		clk        => clk 						,--std_logic
+		clk        => clk 																					,--std_logic
 
-		we         => data_st_we_s				,--std_logic
-		rd         => data_st_rd_s				,--std_logic
-		way        => data_st_way_s			,--c_way_type
-		index      => data_st_index_s			,--c_index_type
-		byteena    => data_st_byteena_s		,--mem_byteena_type
+		we         => data_st_we_s																			,--std_logic
+		rd         => data_st_rd_s																			,--std_logic
+		way        => data_st_way_s																		,--c_way_type
+		index      => data_st_index_s																		,--c_index_type
+		byteena    => data_st_byteena_s																	,--mem_byteena_type
 
-		data_in    => data_st_data_in_s		,--mem_data_type
-		data_out   => data_st_data_out_s		--mem_data_type
+		data_in    => data_st_data_in_s																	,--mem_data_type
+		data_out   => data_st_data_out_s																	--mem_data_type
 	);
 end architecture;

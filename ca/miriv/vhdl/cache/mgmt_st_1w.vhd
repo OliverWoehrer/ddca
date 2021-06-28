@@ -26,4 +26,16 @@ architecture impl of mgmt_st_1w is
 	type info_array is array (SETS-1 downto 0) of c_mgmt_info;
 	signal set_array : info_array := (others => C_MGMT_NOP);
 begin
+	mgmt_info_out <= set_array(to_integer(unsigned(index)));
+
+	sync: process(all)
+	begin
+		if res_n = '0' then
+			set_array <= (others => C_MGMT_NOP);
+		elsif rising_edge(clk) then
+			if we = '1' or we_repl = '1' then
+				set_array(to_integer(unsigned(index))) <= mgmt_info_in;
+			end if;
+		end if;
+	end process;
 end architecture;

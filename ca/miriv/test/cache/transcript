@@ -1,8 +1,16 @@
 # vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full" 
-# Start time: 09:53:16 on Jun 28,2021
+# Start time: 10:10:04 on Jun 28,2021
 # ** Warning: (vsim-8683) Uninitialized out port /tb/cache_inst/data_st_inst/data_out(31 downto 0) has no driver.
 # This port will contribute value (UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU) to the signal network.
 # do scripts/wave.do
 # run -all
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tb/cache_inst/mgmt_st_inst/GEN_MGMT_ST(0)/mgmt_st_1w_inst
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 90 ns  Iteration: 2  Instance: /tb/cache_inst/mgmt_st_inst/GEN_MGMT_ST(0)/mgmt_st_1w_inst
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 140 ns  Iteration: 2  Instance: /tb/cache_inst/mgmt_st_inst/GEN_MGMT_ST(0)/mgmt_st_1w_inst
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 170 ns  Iteration: 2  Instance: /tb/cache_inst/mgmt_st_inst/GEN_MGMT_ST(0)/mgmt_st_1w_inst
 # wave zoom full
 # {0 ps} {283500 ps}
