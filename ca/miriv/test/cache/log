@@ -1,6 +1,6 @@
 ** Warning: (vlib-34) Library already exists at "work".
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:06 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/mem_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -8,10 +8,10 @@ vcom -work work -2008 ../../vhdl/mem_pkg.vhd
 -- Compiling package mem_pkg
 -- Compiling package body mem_pkg
 -- Loading package mem_pkg
-End time: 10:09:51 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:06 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:06 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/core_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -21,10 +21,10 @@ vcom -work work -2008 ../../vhdl/core_pkg.vhd
 -- Compiling package core_pkg
 -- Compiling package body core_pkg
 -- Loading package core_pkg
-End time: 10:09:51 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:06 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:06 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/op_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -33,30 +33,30 @@ vcom -work work -2008 ../../vhdl/op_pkg.vhd
 -- Loading package mem_pkg
 -- Loading package core_pkg
 -- Compiling package op_pkg
-End time: 10:09:51 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:06 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:06 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/cache_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
 -- Loading package mem_pkg
 -- Compiling package cache_pkg
-End time: 10:09:51 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:06 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:06 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/ram/single_clock_rw_ram_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
 -- Loading package std_logic_1164
 -- Loading package NUMERIC_STD
 -- Compiling package single_clock_rw_ram_pkg
-End time: 10:09:51 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:01
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:51 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/ram/single_clock_rw_ram.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -64,10 +64,10 @@ vcom -work work -2008 ../../vhdl/cache/ram/single_clock_rw_ram.vhd
 -- Loading package NUMERIC_STD
 -- Compiling entity single_clock_rw_ram
 -- Compiling architecture rtl of single_clock_rw_ram
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:01
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/data_st_1w.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -78,10 +78,10 @@ vcom -work work -2008 ../../vhdl/cache/data_st_1w.vhd
 -- Loading package single_clock_rw_ram_pkg
 -- Compiling entity data_st_1w
 -- Compiling architecture impl of data_st_1w
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/data_st.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -92,10 +92,10 @@ vcom -work work -2008 ../../vhdl/cache/data_st.vhd
 -- Loading package single_clock_rw_ram_pkg
 -- Compiling entity data_st
 -- Compiling architecture impl of data_st
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/mgmt_st_1w.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -105,10 +105,10 @@ vcom -work work -2008 ../../vhdl/cache/mgmt_st_1w.vhd
 -- Loading package cache_pkg
 -- Compiling entity mgmt_st_1w
 -- Compiling architecture impl of mgmt_st_1w
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/mgmt_st.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -121,10 +121,10 @@ vcom -work work -2008 ../../vhdl/cache/mgmt_st.vhd
 -- Compiling entity mgmt_st
 -- Compiling architecture impl of mgmt_st
 -- Loading entity mgmt_st_1w
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:07 on Jun 28,2021
 vcom -work work -2008 ../../vhdl/cache/cache.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -141,10 +141,10 @@ vcom -work work -2008 ../../vhdl/cache/cache.vhd
 -- Loading entity mgmt_st
 -- Loading package single_clock_rw_ram_pkg
 -- Loading entity data_st
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:07 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:08 on Jun 28,2021
 vcom -work work -2008 ../tb_util_pkg.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -157,10 +157,10 @@ vcom -work work -2008 ../tb_util_pkg.vhd
 -- Compiling package tb_util_pkg
 -- Compiling package body tb_util_pkg
 -- Loading package tb_util_pkg
-End time: 10:09:52 on Jun 28,2021, Elapsed time: 0:00:00
+End time: 10:26:08 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
-Start time: 10:09:52 on Jun 28,2021
+Start time: 10:26:08 on Jun 28,2021
 vcom -work work -2008 tb/cache_tb.vhd 
 -- Loading package STANDARD
 -- Loading package TEXTIO
@@ -177,5 +177,5 @@ vcom -work work -2008 tb/cache_tb.vhd
 -- Loading package ATTRIBUTES
 -- Loading package std_logic_misc
 -- Loading entity cache
-End time: 10:09:53 on Jun 28,2021, Elapsed time: 0:00:01
+End time: 10:26:08 on Jun 28,2021, Elapsed time: 0:00:00
 Errors: 0, Warnings: 0

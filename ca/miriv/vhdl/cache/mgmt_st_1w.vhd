@@ -33,7 +33,7 @@ begin
 		if res_n = '0' then
 			set_array <= (others => C_MGMT_NOP);
 		elsif rising_edge(clk) then
-			if we = '1' or we_repl = '1' then
+			if we = '1' then
 				set_array(to_integer(unsigned(index))) <= mgmt_info_in;
 			end if;
 		end if;

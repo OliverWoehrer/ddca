@@ -31,31 +31,29 @@ entity mgmt_st is
 end entity;
 
 architecture impl of mgmt_st is
-signal test :std_logic_vector( WAYS_LD-1 downto 0);
+	signal temp :std_logic := '0';
 begin
-	GEN_MGMT_ST: for I in 0 to WAYS_LD-1 generate
-		mgmt_st_1w_inst : entity work.mgmt_st_1w
-		generic map(
-			SETS_LD =>SETS_LD
-		)
-		port map(
-			clk     =>clk,
-			res_n   =>res_n,
+	mgmt_st_1w_inst : entity work.mgmt_st_1w
+	generic map(
+		SETS_LD =>SETS_LD
+	)
+	port map(
+		clk     =>clk,
+		res_n   =>res_n,
 
-			index   => index,
-			we      => '0',
-			we_repl => '0',	
+		index   => index,
+		we      => wr,
+		we_repl => '0',	
 
-			mgmt_info_in.valid => valid_in,
-			mgmt_info_in.dirty => dirty_in,
-			mgmt_info_in.replace => '0',
-			mgmt_info_in.tag => tag_in,
-			mgmt_info_out.valid => valid_out,
-			mgmt_info_out.dirty => dirty_out,
-			mgmt_info_out.replace => test(I),
-			mgmt_info_out.tag => tag_out
-		);
-	end generate GEN_MGMT_ST;	
+		mgmt_info_in.valid => valid_in,
+		mgmt_info_in.dirty => dirty_in,
+		mgmt_info_in.replace => '0',
+		mgmt_info_in.tag => tag_in,
+		mgmt_info_out.valid => valid_out,
+		mgmt_info_out.dirty => dirty_out,
+		mgmt_info_out.replace => temp,
+		mgmt_info_out.tag => tag_out
+	);
 	
 	hit_out <= '1' when tag_in = tag_out else '0';
 end architecture;
