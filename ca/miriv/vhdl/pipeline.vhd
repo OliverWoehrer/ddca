@@ -48,7 +48,6 @@ architecture impl of pipeline is
 	signal zero_from_execute_s			: std_logic := '0';
 	signal mem_op_from_execute_s		: mem_op_type := MEM_NOP;
 	signal wb_op_from_execute_s		: wb_op_type := WB_NOP;
-	signal exec_op_from_execute_s		: exec_op_type := EXEC_NOP;
 	
 	--mem
 	signal stall_mem_s					: std_logic := '0';
@@ -144,7 +143,7 @@ begin
 		wbop_out      => wb_op_from_execute_s,
 
 		-- FWD
-		exec_op       => exec_op_from_execute_s,
+		exec_op       => open,
 		reg_write_mem => reg_write_from_mem_s,
 		reg_write_wr  => reg_write_from_wb_s
 	);

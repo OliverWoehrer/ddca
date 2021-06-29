@@ -84,7 +84,6 @@ begin
 			flush_mem <= '0';
 			flush_wb <= '0';
 		elsif stall = '0' then
-			pcsrc_out <= pcsrc_in;
 			if pcsrc_in = '1' then
 				flush_fetch <= '1';
 				flush_dec <= '1';
@@ -112,4 +111,19 @@ begin
 			flush_wb <= '0';
 		end if;
 	end process;
+	
+	pcsrc_logic_sync: process(clk)
+	begin
+		if rising_edge(clk) then
+			if (res_n = '0') then
+				pcsrc_out <= '0';
+			elsif (stall = '0') then
+				pcsrc_out <= pcsrc_in;
+			else
+				-- stall pipeline, keep current value
+			end if;
+		end if;
+	end process;
+	
+	
 end architecture;

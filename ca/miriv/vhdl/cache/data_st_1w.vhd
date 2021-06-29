@@ -25,4 +25,19 @@ end entity;
 
 architecture impl of data_st_1w is
 begin
+	
+	ram_inst : entity work.single_clock_rw_ram(rtl)
+	generic map(
+		ADDR_WIDTH	=> SETS_LD,
+		DATA_WIDTH 	=> DATA_WIDTH
+	)
+	port map(
+		clk				=> clk,
+		data_in       	=> data_in,
+		write_address	=> index,
+		read_address  	=> index,
+		we            	=> we,
+		data_out 		=> data_out
+	);
+	
 end architecture;

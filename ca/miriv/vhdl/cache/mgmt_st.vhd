@@ -32,7 +32,22 @@ end entity;
 
 architecture impl of mgmt_st is
 	signal temp :std_logic := '0';
+	
+	signal mgmt_info_in_s : c_mgmt_info := C_MGMT_NOP;
+	signal mgmt_info_out_s : c_mgmt_info := C_MGMT_NOP;
 begin
+
+	--Permanent Hardwire:
+	way_out <= (others => '0');
+	mgmt_info_in_s.valid <= valid_in;
+	mgmt_info_in_s.dirty <= dirty_in;
+	mgmt_info_in_s.replace <= '0';
+	mgmt_info_in_s.tag <= tag_in;
+	valid_out <= mgmt_info_out_s.valid;
+	dirty_out <= mgmt_info_out_s.dirty;
+	-- unused <= mgmt_info_out.replace;
+	tag_out <= mgmt_info_out_s.tag;
+	
 	mgmt_st_1w_inst : entity work.mgmt_st_1w
 	generic map(
 		SETS_LD =>SETS_LD
@@ -45,14 +60,8 @@ begin
 		we      => wr,
 		we_repl => '0',	
 
-		mgmt_info_in.valid => valid_in,
-		mgmt_info_in.dirty => dirty_in,
-		mgmt_info_in.replace => '0',
-		mgmt_info_in.tag => tag_in,
-		mgmt_info_out.valid => valid_out,
-		mgmt_info_out.dirty => dirty_out,
-		mgmt_info_out.replace => temp,
-		mgmt_info_out.tag => tag_out
+		mgmt_info_in => mgmt_info_in_s,
+		mgmt_info_out => mgmt_info_out_s
 	);
 	
 	hit_out <= '1' when (tag_in = tag_out) and valid_out = '1' else '0';

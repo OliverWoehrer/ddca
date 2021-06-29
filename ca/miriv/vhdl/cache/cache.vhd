@@ -82,7 +82,6 @@ begin
 	end process;
 	
 	fsm: process(all)
-		variable write_flag : natural := 0;
 	begin
 		state_next <= state;
 		cache_to_cpu <= MEM_IN_NOP2;
@@ -90,27 +89,26 @@ begin
 		mgmt_st_wr_s <= '0';
 		mgmt_st_valid_in_s <= '0';
 		mgmt_st_dirty_in_s <= '0';
+		mgmt_st_index_s <= (others => '0');
 		case state is
 			when IDLE =>
-				if write_flag /= 0 then
-					if mgmt_st_hit_out_s = '1' then
-						mgmt_st_wr_s <= '1';
-						mgmt_st_valid_in_s <= '1';
-						mgmt_st_dirty_in_s <= '1';
-						write_flag := write_flag - 1;
-					end if;
-					--miss missing
-				end if;
 				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
 					cache_to_mem <= cpu_to_cache;
 					cache_to_cpu <= mem_to_cache;
 					state_next <= IDLE;
 				elsif cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
 					--read access
+					mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 					state_next <= READ_CACHE;
 				elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
 					--write access
-					write_flag := write_flag + 1;
+					mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
+					if mgmt_st_hit_out_s = '1' then
+						mgmt_st_wr_s <= '1';
+						mgmt_st_valid_in_s <= '1';
+						mgmt_st_dirty_in_s <= '1';
+					end if;
+					state_next <= IDLE;
 				else 
 					state_next <= IDLE;
 				end if;
@@ -146,7 +144,6 @@ begin
 						state_next <= READ_CACHE;
 					elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
 						--write access
-						write_flag := write_flag +1;
 						state_next <= IDLE;
 					else
 						state_next <= IDLE;
@@ -172,22 +169,22 @@ begin
 	
 	mgmt_st_inst: entity work.mgmt_st
 	generic map(
-		SETS_LD  	=>SETS_LD,
-		WAYS_LD  	=>WAYS_LD
+		SETS_LD  	=> SETS_LD,
+		WAYS_LD  	=> WAYS_LD
 	)
 	port map (
 		clk   		=> clk 																					,--std_logic
 		res_n 		=> res_n																					,--std_logic
 
-		index 		=> cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)							,--c_index_type
+		index 		=> mgmt_st_index_s																	,--c_index_type,  cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)
 		wr    		=>	mgmt_st_wr_s																		,--std_logic
-		rd    		=>	mgmt_st_rd_s																		,--std_logic
+		rd    		=>	'1'																					,--std_logic
 
 		valid_in    => mgmt_st_valid_in_s																,--std_logic
 		dirty_in    => mgmt_st_dirty_in_s																,--std_logic
 		tag_in      => cpu_to_cache_s.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE)	,--c_tag_type
-		way_out     => mgmt_st_way_out_s																	,--c_way_type
-		valid_out   => mgmt_st_valid_out_s																,--std_logic
+		way_out     => open																					,--c_way_type
+		valid_out   => open																					,--std_logic
 		dirty_out   => mgmt_st_dirty_out_s																,--std_logic
 		tag_out     => mgmt_st_tag_out_s																	,--c_tag_type
 		hit_out     =>	mgmt_st_hit_out_s   																--std_logic
@@ -195,8 +192,8 @@ begin
 	
 	data_st_inst: entity work.data_st
 	generic map (
-		SETS_LD  	=>SETS_LD,
-		WAYS_LD  	=>WAYS_LD
+		SETS_LD  	=> SETS_LD,
+		WAYS_LD  	=> WAYS_LD
 	)
 	port map(
 		clk        => clk 																					,--std_logic
@@ -204,7 +201,7 @@ begin
 		we         => data_st_we_s																			,--std_logic
 		rd         => data_st_rd_s																			,--std_logic
 		way        => data_st_way_s																		,--c_way_type
-		index      => data_st_index_s																		,--c_index_type
+		index      => cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)								,--c_index_type
 		byteena    => data_st_byteena_s																	,--mem_byteena_type
 
 		data_in    => data_st_data_in_s																	,--mem_data_type

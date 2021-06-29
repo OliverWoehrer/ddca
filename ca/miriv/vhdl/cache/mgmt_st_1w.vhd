@@ -28,12 +28,17 @@ architecture impl of mgmt_st_1w is
 begin
 	mgmt_info_out <= set_array(to_integer(unsigned(index)));
 
-	sync: process(all)
+	sync: process(clk)
 	begin
-		if res_n = '0' then
-			set_array <= (others => C_MGMT_NOP);
-		elsif we = '1' then
-			set_array(to_integer(unsigned(index))) <= mgmt_info_in;
+		if rising_edge(clk) then
+			if res_n = '0' then
+				set_array <= (others => C_MGMT_NOP);
+			elsif we = '1' then
+				set_array(to_integer(unsigned(index))) <= mgmt_info_in;
+				--latch <= mgmt_info_in;
+			--else
+				--set_array(to_integer(unsigned(index))) <= latch;
+			end if;
 		end if;
 	end process;
 end architecture;
