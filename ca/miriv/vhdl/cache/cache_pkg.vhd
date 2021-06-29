@@ -25,7 +25,7 @@ package cache_pkg is
 	end record;
 	
 	constant C_MGMT_NOP : c_mgmt_info := (
-		valid   		=> '1',
+		valid   		=> '0',
 		dirty   		=> '0',
 		replace   	=> '0',
 		tag 			=> (others => '0')

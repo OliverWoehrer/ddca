@@ -81,56 +81,49 @@ begin
 		end if;
 	end process;
 	
-	output: process (all)
+	fsm: process(all)
+		variable write_flag : natural := 0;
 	begin
+		state_next <= state;
 		cache_to_cpu <= MEM_IN_NOP2;
 		cache_to_mem <= MEM_OUT_NOP2;
+		mgmt_st_wr_s <= '0';
+		mgmt_st_valid_in_s <= '0';
+		mgmt_st_dirty_in_s <= '0';
 		case state is
 			when IDLE =>
+				if write_flag /= 0 then
+					if mgmt_st_hit_out_s = '1' then
+						mgmt_st_wr_s <= '1';
+						mgmt_st_valid_in_s <= '1';
+						mgmt_st_dirty_in_s <= '1';
+						write_flag := write_flag - 1;
+					end if;
+					--miss missing
+				end if;
 				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
 					cache_to_mem <= cpu_to_cache;
 					cache_to_cpu <= mem_to_cache;
-				end if;
-			when READ_CACHE =>
-				if mgmt_st_hit_out_s = '1' then
-					cache_to_cpu.rddata <= data_st_data_out_s;
-				else
-					cache_to_cpu.busy <= '1';
-				end if;
-			when READ_MEM_START =>
-				cache_to_cpu.busy <= '1';
-				cache_to_mem <= cpu_to_cache;
-				cache_to_mem.rd <= '1';
-			when READ_MEM =>
-				cache_to_cpu <= mem_to_cache;
-			when WRITE_BACK_START =>
-			when WRITE_BACK =>
-			when others =>
-		end case;
-	end process;
-	
-	fsm: process(all)
-	begin
-		state_next <= state;
-		case state is
-			when IDLE =>
-				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
 					state_next <= IDLE;
 				elsif cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
 					--read access
 					state_next <= READ_CACHE;
 				elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
 					--write access
+					write_flag := write_flag + 1;
 				else 
 					state_next <= IDLE;
 				end if;
 			when READ_CACHE =>
 				if mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '0' then
+					cache_to_cpu.rddata <= data_st_data_out_s;
 					state_next <= IDLE;
 				elsif mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '1' then
+					cache_to_cpu.rddata <= data_st_data_out_s;
 					state_next <= READ_CACHE;
 				else
 					--miss
+					cache_to_cpu.busy <= '1';
 					if mgmt_st_dirty_out_s = '1' then
 						state_next <= WRITE_BACK_START;
 					else
@@ -138,10 +131,41 @@ begin
 					end if;
 				end if;
 			when READ_MEM_START =>
+				cache_to_cpu.busy <= '1'; --safety busy
+				cache_to_mem <= cpu_to_cache;
+				cache_to_mem.rd <= '1';
 				state_next <= READ_MEM;
 			when READ_MEM =>
+				cache_to_cpu <= mem_to_cache;
+				if mem_to_cache.busy = '1' then
+					state_next <= READ_MEM;
+				else
+					mgmt_st_wr_s <= '1';
+					mgmt_st_valid_in_s <= '1';
+					if cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
+						state_next <= READ_CACHE;
+					elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
+						--write access
+						write_flag := write_flag +1;
+						state_next <= IDLE;
+					else
+						state_next <= IDLE;
+					end if;
+				end if;
 			when WRITE_BACK_START =>
+				cache_to_cpu.busy <= '1'; --safety busy
+				cache_to_mem.address <= mgmt_st_tag_out_s & cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
+				cache_to_mem.wr <= '1';
+				cache_to_mem.wrdata <= data_st_data_out_s;
+				state_next <= WRITE_BACK;
 			when WRITE_BACK =>
+				cache_to_cpu.busy <= '1'; --safety busy for tb
+				--cache_to_cpu <= mem_to_cache; change when mem used
+				if mem_to_cache.busy = '1' then
+					state_next <= WRITE_BACK;
+				else
+					state_next <= READ_MEM_START;
+				end if;
 		end case;
 	end process;
 	
@@ -156,8 +180,8 @@ begin
 		res_n 		=> res_n																					,--std_logic
 
 		index 		=> cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)							,--c_index_type
-		wr    		=>	cpu_to_cache_s.wr																	,--std_logic
-		rd    		=>	cpu_to_cache_s.rd																	,--std_logic
+		wr    		=>	mgmt_st_wr_s																		,--std_logic
+		rd    		=>	mgmt_st_rd_s																		,--std_logic
 
 		valid_in    => mgmt_st_valid_in_s																,--std_logic
 		dirty_in    => mgmt_st_dirty_in_s																,--std_logic

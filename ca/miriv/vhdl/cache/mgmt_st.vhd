@@ -55,5 +55,5 @@ begin
 		mgmt_info_out.tag => tag_out
 	);
 	
-	hit_out <= '1' when tag_in = tag_out else '0';
+	hit_out <= '1' when (tag_in = tag_out) and valid_out = '1' else '0';
 end architecture;

@@ -48,23 +48,41 @@ begin
 		res_n <= '1';
 		timeout(2, CLK_PERIOD);
 		
-		cpu_to_cache.rd <= '1';
-		cpu_to_cache.address <= (others => '0');
-		timeout(1, CLK_PERIOD);
-		cpu_to_cache.rd <= '0';
-		cpu_to_cache.address <= (others => 'X');
 		
-		timeout(2, CLK_PERIOD);
+		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
-		cpu_to_cache.address <= (others => '0');
+		cpu_to_cache.address <= 14x"0000";
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
 		
-		timeout(2, CLK_PERIOD);
+		
+		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
-		cpu_to_cache.address <= 14x"0F0F";
+		cpu_to_cache.address <= 14x"0F0B";
+		wait until falling_edge(cache_to_cpu.busy);
+		cpu_to_cache.rd <= '0';
+		cpu_to_cache.address <= (others => 'X');
+		
+		
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.rd <= '1';
+		cpu_to_cache.address <= 14x"0AAB";
+		wait until falling_edge(cache_to_cpu.busy);
+		cpu_to_cache.rd <= '0';
+		cpu_to_cache.address <= (others => 'X');
+		
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.wr <= '1';
+		cpu_to_cache.address <= 14x"0AAB";
 		timeout(1, CLK_PERIOD);
+		cpu_to_cache.wr <= '0';
+		cpu_to_cache.address <= (others => 'X');
+		
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.rd <= '1';
+		cpu_to_cache.address <= 14x"0CCB";
+		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
 		
@@ -73,7 +91,7 @@ begin
 		wait;
 	end process;
 	
-
+	
 	generate_clk : process
 	begin
 		clk_generate(clk, CLK_PERIOD, stop);

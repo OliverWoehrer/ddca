@@ -21,7 +21,7 @@ entity data_st is
 		byteena    : in mem_byteena_type;
 
 		data_in    : in mem_data_type;
-		data_out   : out mem_data_type
+		data_out   : out mem_data_type := (others => '1')
 	);
 end entity;
 
