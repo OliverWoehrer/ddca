@@ -83,13 +83,22 @@ begin
 	
 	fsm: process(all)
 	begin
+		--Fallback cases:
 		state_next <= state;
 		cache_to_cpu <= MEM_IN_NOP2;
 		cache_to_mem <= MEM_OUT_NOP2;
+		
+		--Managment Fallback values:
 		mgmt_st_wr_s <= '0';
 		mgmt_st_valid_in_s <= '0';
 		mgmt_st_dirty_in_s <= '0';
 		mgmt_st_index_s <= (others => '0');
+		
+		--Data Fallback values:
+		data_st_we_s <= '0';
+		data_st_data_in_s <= (others => '0');
+		
+		
 		case state is
 			when IDLE =>
 				if (cpu_to_cache.address and not ADDR_MASK) /= 14x"0000" then
@@ -102,17 +111,23 @@ begin
 					state_next <= READ_CACHE;
 				elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
 					--write access
-					mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
+					mgmt_st_index_s <= cpu_to_cache.address(INDEX_SIZE-1 downto 0);
 					if mgmt_st_hit_out_s = '1' then
 						mgmt_st_wr_s <= '1';
 						mgmt_st_valid_in_s <= '1';
 						mgmt_st_dirty_in_s <= '1';
+						data_st_we_s <= '1';
+						data_st_data_in_s <= cpu_to_cache.wrdata;
+					else -- write miss
+						cache_to_mem <= cpu_to_cache;
 					end if;
 					state_next <= IDLE;
 				else 
 					state_next <= IDLE;
 				end if;
+				
 			when READ_CACHE =>
+				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				if mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '0' then
 					cache_to_cpu.rddata <= data_st_data_out_s;
 					state_next <= IDLE;
@@ -128,18 +143,24 @@ begin
 						state_next <= READ_MEM_START;
 					end if;
 				end if;
+				
 			when READ_MEM_START =>
+				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy
 				cache_to_mem <= cpu_to_cache;
 				cache_to_mem.rd <= '1';
 				state_next <= READ_MEM;
+				
 			when READ_MEM =>
+				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu <= mem_to_cache;
 				if mem_to_cache.busy = '1' then
 					state_next <= READ_MEM;
 				else
 					mgmt_st_wr_s <= '1';
 					mgmt_st_valid_in_s <= '1';
+					data_st_data_in_s <= mem_to_cache.rddata;
+					data_st_we_s <= '1';
 					if cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
 						state_next <= READ_CACHE;
 					elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
@@ -149,13 +170,17 @@ begin
 						state_next <= IDLE;
 					end if;
 				end if;
+				
 			when WRITE_BACK_START =>
+				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy
 				cache_to_mem.address <= mgmt_st_tag_out_s & cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_mem.wr <= '1';
 				cache_to_mem.wrdata <= data_st_data_out_s;
 				state_next <= WRITE_BACK;
+				
 			when WRITE_BACK =>
+				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy for tb
 				--cache_to_cpu <= mem_to_cache; change when mem used
 				if mem_to_cache.busy = '1' then
@@ -199,10 +224,10 @@ begin
 		clk        => clk 																					,--std_logic
 
 		we         => data_st_we_s																			,--std_logic
-		rd         => data_st_rd_s																			,--std_logic
-		way        => data_st_way_s																		,--c_way_type
+		rd         => '1'																						,--std_logic
+		way        => (others => '0')																		,--c_way_type
 		index      => cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)								,--c_index_type
-		byteena    => data_st_byteena_s																	,--mem_byteena_type
+		byteena    => (others => '1')																		,--mem_byteena_type
 
 		data_in    => data_st_data_in_s																	,--mem_data_type
 		data_out   => data_st_data_out_s																	--mem_data_type
