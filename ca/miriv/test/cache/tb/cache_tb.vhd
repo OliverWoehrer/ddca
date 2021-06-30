@@ -75,14 +75,14 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
-		mem_to_cache.rddata <= 32x"12345678";
+		mem_to_cache.rddata <= 32x"87654321";
 		timeout(1, CLK_PERIOD);
 		mem_to_cache.rddata <= (others => 'X');
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.wr <= '1';
 		cpu_to_cache.address <= 14x"0AAB";
-		cpu_to_cache.wrdata <= 32x"12345678";
+		cpu_to_cache.wrdata <= 32x"44444444";
 		timeout(1, CLK_PERIOD);
 		cpu_to_cache.wr <= '0';
 		cpu_to_cache.address <= (others => 'X');
@@ -93,7 +93,7 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
-		mem_to_cache.rddata <= 32x"12345678";
+		mem_to_cache.rddata <= 32x"87654321";
 		timeout(1, CLK_PERIOD);
 		mem_to_cache.rddata <= (others => 'X');
 		

@@ -51,6 +51,7 @@ architecture impl of cache is
 	
 	signal mgmt_st_valid_in_s				: std_logic := '0';
 	signal mgmt_st_dirty_in_s				: std_logic := '0';
+	signal mgmt_st_tag_in_s					: c_tag_type := (others => '0');
 	signal mgmt_st_way_out_s				: c_way_type := (others => '0');
 	signal mgmt_st_valid_out_s				: std_logic := '0';
 	signal mgmt_st_dirty_out_s				: std_logic	:= '0';
@@ -94,10 +95,14 @@ begin
 		mgmt_st_dirty_in_s <= '0';
 		mgmt_st_index_s <= (others => '0');
 		
+		mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
+		mgmt_st_tag_in_s <= cpu_to_cache_s.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE);
+		
 		--Data Fallback values:
 		data_st_we_s <= '0';
 		data_st_data_in_s <= (others => '0');
-		
+	
+		data_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 		
 		case state is
 			when IDLE =>
@@ -107,11 +112,12 @@ begin
 					state_next <= IDLE;
 				elsif cpu_to_cache.rd = '1' and cpu_to_cache.wr = '0' then
 					--read access
-					mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 					state_next <= READ_CACHE;
 				elsif cpu_to_cache.rd = '0' and cpu_to_cache.wr = '1' then
 					--write access
 					mgmt_st_index_s <= cpu_to_cache.address(INDEX_SIZE-1 downto 0);
+					mgmt_st_tag_in_s <= cpu_to_cache.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE);
+					data_st_index_s <= cpu_to_cache.address(INDEX_SIZE-1 downto 0);
 					if mgmt_st_hit_out_s = '1' then
 						mgmt_st_wr_s <= '1';
 						mgmt_st_valid_in_s <= '1';
@@ -127,7 +133,6 @@ begin
 				end if;
 				
 			when READ_CACHE =>
-				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				if mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '0' then
 					cache_to_cpu.rddata <= data_st_data_out_s;
 					state_next <= IDLE;
@@ -145,14 +150,12 @@ begin
 				end if;
 				
 			when READ_MEM_START =>
-				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy
 				cache_to_mem <= cpu_to_cache;
 				cache_to_mem.rd <= '1';
 				state_next <= READ_MEM;
 				
 			when READ_MEM =>
-				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu <= mem_to_cache;
 				if mem_to_cache.busy = '1' then
 					state_next <= READ_MEM;
@@ -172,7 +175,6 @@ begin
 				end if;
 				
 			when WRITE_BACK_START =>
-				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy
 				cache_to_mem.address <= mgmt_st_tag_out_s & cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_mem.wr <= '1';
@@ -180,7 +182,6 @@ begin
 				state_next <= WRITE_BACK;
 				
 			when WRITE_BACK =>
-				mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
 				cache_to_cpu.busy <= '1'; --safety busy for tb
 				--cache_to_cpu <= mem_to_cache; change when mem used
 				if mem_to_cache.busy = '1' then
@@ -207,7 +208,7 @@ begin
 
 		valid_in    => mgmt_st_valid_in_s																,--std_logic
 		dirty_in    => mgmt_st_dirty_in_s																,--std_logic
-		tag_in      => cpu_to_cache_s.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE)	,--c_tag_type
+		tag_in      => mgmt_st_tag_in_s																	,--c_tag_type
 		way_out     => open																					,--c_way_type
 		valid_out   => open																					,--std_logic
 		dirty_out   => mgmt_st_dirty_out_s																,--std_logic
@@ -226,7 +227,7 @@ begin
 		we         => data_st_we_s																			,--std_logic
 		rd         => '1'																						,--std_logic
 		way        => (others => '0')																		,--c_way_type
-		index      => cpu_to_cache_s.address(INDEX_SIZE-1 downto 0)								,--c_index_type
+		index      => data_st_index_s																		,--c_index_type
 		byteena    => (others => '1')																		,--mem_byteena_type
 
 		data_in    => data_st_data_in_s																	,--mem_data_type
