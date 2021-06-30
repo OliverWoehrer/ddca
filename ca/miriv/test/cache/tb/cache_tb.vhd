@@ -48,6 +48,133 @@ begin
 		res_n <= '1';
 		timeout(2, CLK_PERIOD);
 		
+		-------- TEST SUIT START --------
+		timeout(5, CLK_PERIOD);
+		
+		--Read Miss (MEM READ):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0000";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(2, CLK_PERIOD); -- wait for cache
+		mem_to_cache.busy <= '1';
+		timeout(3, CLK_PERIOD); -- wait while mem busy
+		mem_to_cache.busy <= '0';
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Read Miss (MEM READ):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0012";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(2, CLK_PERIOD); -- wait for cache
+		mem_to_cache.busy <= '1';
+		timeout(3, CLK_PERIOD); -- simulate wait while mem busy
+		mem_to_cache.busy <= '0';
+		mem_to_cache.rddata <= 32x"0000000A";
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Read Miss (MEM READ):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0016";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(2, CLK_PERIOD); -- wait for cache
+		mem_to_cache.busy <= '1';
+		timeout(3, CLK_PERIOD); -- wait while mem busy
+		mem_to_cache.busy <= '0';
+		mem_to_cache.rddata <= 32x"0000000B";
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Read Hit (READ CACHE):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0012";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(1, CLK_PERIOD); -- wait for cache
+		mem_to_cache.rddata <= 32x"000000FF"; -- should not be used, cache value (0x0A) should be read instead!
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Read Miss (READ MEM):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0022";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(2, CLK_PERIOD); -- wait for cache
+		mem_to_cache.busy <= '1';
+		timeout(3, CLK_PERIOD); -- wait while mem busy
+		mem_to_cache.busy <= '0';
+		mem_to_cache.rddata <= 32x"0000000C";
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		
+		
+		--Write Hit (Dirty):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0016";
+		cpu_to_cache.wr <= '1';
+		cpu_to_cache.wrdata <= 32x"000000BB";
+		timeout(1, CLK_PERIOD); -- assert wr for 1 cycle
+		cpu_to_cache.wr <= '0';
+		cpu_to_cache.wrdata <= (others => 'X');
+		
+		--Read Hit (READ CACHE):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0016";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		mem_to_cache.rddata <= 32x"000000FF"; -- should not be used, cache value (0xBB) should be read instead!
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Write Miss (WB):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0026";
+		cpu_to_cache.wr <= '1';
+		cpu_to_cache.wrdata <= 32x"000000CC";
+		timeout(1, CLK_PERIOD); -- assert wr for 1 cycle
+		cpu_to_cache.wr <= '0';
+		cpu_to_cache.wrdata <= (others => 'X');
+		
+		--Read Hit (READ CACHE):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0026";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		mem_to_cache.rddata <= 32x"000000FF"; -- should not be used, cache value (0xCC) should be read instead!
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		--Read Miss (WB & READ MEM):
+		timeout(3, CLK_PERIOD);
+		cpu_to_cache.address <= 14x"0016";
+		cpu_to_cache.rd <= '1';
+		timeout(1, CLK_PERIOD); -- assert rd for 1 cycle
+		cpu_to_cache.rd <= '0';
+		timeout(2, CLK_PERIOD); -- wait for cache
+		mem_to_cache.busy <= '1';
+		timeout(3, CLK_PERIOD); -- wait while mem busy
+		mem_to_cache.busy <= '0';
+		mem_to_cache.rddata <= 32x"000000BB"; -- should not be used, cache value (0xBB) should be read instead!
+		timeout(1, CLK_PERIOD); -- data valid cycle
+		mem_to_cache.rddata <= (others => 'X');
+		
+		timeout(8, CLK_PERIOD);
+		-------- TEST SUIT END --------
+		
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
