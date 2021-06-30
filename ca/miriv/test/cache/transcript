@@ -1,36 +1,10 @@
 # vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full" 
-# Start time: 14:10:50 on Jun 30,2021
+# Start time: 15:16:04 on Jun 30,2021
 # do scripts/wave.do
 # run -all
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 0 ps  Iteration: 1  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 10 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 140 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 150 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 210 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 220 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 280 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 290 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 330 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 340 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 410 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 420 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 480 ns  Iteration: 3  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 490 ns  Iteration: 2  Instance: /tb/cache_inst/data_st_inst/data_inst/ram_inst
 # wave zoom full
-# {0 ps} {619500 ps}
-# End time: 14:20:31 on Jun 30,2021, Elapsed time: 0:09:41
-# Errors: 0, Warnings: 14
+# {0 ps} {1239 ns}
+# End time: 15:18:35 on Jun 30,2021, Elapsed time: 0:02:31
+# Errors: 0, Warnings: 1

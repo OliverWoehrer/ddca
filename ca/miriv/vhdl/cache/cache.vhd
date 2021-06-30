@@ -43,7 +43,7 @@ architecture impl of cache is
 	signal state  								: state_t := IDLE;
 	signal state_next							: state_t := IDLE;
 	
-	signal cpu_to_cache_s 					: mem_out_type := MEM_OUT_NOP2;
+	signal cpu_to_cache_s 					: mem_out_type := MEM_OUT_NOP;
 	--mgmt_st
 	signal mgmt_st_index_s					: c_index_type := (others => '0');
 	signal mgmt_st_wr_s						: std_logic := '0';
@@ -86,8 +86,8 @@ begin
 	begin
 		--Fallback cases:
 		state_next <= state;
-		cache_to_cpu <= MEM_IN_NOP2;
-		cache_to_mem <= MEM_OUT_NOP2;
+		cache_to_cpu <= MEM_IN_NOP;
+		cache_to_mem <= MEM_OUT_NOP;
 		
 		--Managment Fallback values:
 		mgmt_st_wr_s <= '0';
@@ -95,14 +95,14 @@ begin
 		mgmt_st_dirty_in_s <= '0';
 		mgmt_st_index_s <= (others => '0');
 		
-		mgmt_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
-		mgmt_st_tag_in_s <= cpu_to_cache_s.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE);
+		mgmt_st_index_s <= cpu_to_cache.address(INDEX_SIZE-1 downto 0);
+		mgmt_st_tag_in_s <= cpu_to_cache.address(ADDR_WIDTH-1 downto ADDR_WIDTH-TAG_SIZE);
 		
 		--Data Fallback values:
 		data_st_we_s <= '0';
 		data_st_data_in_s <= (others => '0');
 	
-		data_st_index_s <= cpu_to_cache_s.address(INDEX_SIZE-1 downto 0);
+		data_st_index_s <= cpu_to_cache.address(INDEX_SIZE-1 downto 0);
 		
 		case state is
 			when IDLE =>
