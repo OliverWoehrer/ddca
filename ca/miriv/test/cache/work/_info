@@ -7,17 +7,17 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-d/home/edauser/ddca/ca/miriv/test/cache
+Z0 d/home/edauser/ddca/ca/miriv/test/cache
 Ecache
-Z0 w1624982505
-Z1 DPx4 work 9 cache_pkg 0 22 deGoA_UX;dk@?<ZTJ=D<50
-Z2 DPx4 work 7 mem_pkg 0 22 KeT]cYo]@i?UePYnWej0D0
-Z3 DPx8 synopsys 10 attributes 0 22 liCm]LV3<lX4Zl>o6^8IV1
-Z4 DPx4 ieee 14 std_logic_misc 0 22 BLzBaQbXS>Q1z>5YO]m[52
-Z5 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
-Z6 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
-Z7 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
-Z8 d/home/edauser/Documents/ddca_ss2021/ca/miriv/test/cache
+Z1 w1624982879
+Z2 DPx4 work 9 cache_pkg 0 22 deGoA_UX;dk@?<ZTJ=D<50
+Z3 DPx4 work 7 mem_pkg 0 22 KeT]cYo]@i?UePYnWej0D0
+Z4 DPx8 synopsys 10 attributes 0 22 liCm]LV3<lX4Zl>o6^8IV1
+Z5 DPx4 ieee 14 std_logic_misc 0 22 BLzBaQbXS>Q1z>5YO]m[52
+Z6 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z7 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z8 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
 Z9 8../../vhdl/cache/cache.vhd
 Z10 F../../vhdl/cache/cache.vhd
 l0
@@ -26,9 +26,9 @@ VgiJDUQJVz7?T=j_ne=i7a2
 !s100 5VjX020AEeSoFX[@8Cina0
 Z11 OV;C;10.5b;63
 33
-Z12 !s110 1624982513
+Z12 !s110 1625040808
 !i10b 1
-Z13 !s108 1624982513.000000
+Z13 !s108 1625040808.000000
 Z14 !s90 -work|work|-2008|../../vhdl/cache/cache.vhd|
 Z15 !s107 ../../vhdl/cache/cache.vhd|
 !i113 1
@@ -38,13 +38,13 @@ Aimpl
 Z18 DPx4 work 23 single_clock_rw_ram_pkg 0 22 SSPU:PCSL0;_::gUf=oAJ3
 Z19 DEx4 work 7 data_st 0 22 S06lQzj4PTjWz:68Q;2@c0
 Z20 DEx4 work 7 mgmt_st 0 22 @nIFHBM0?>h7k=gUe9hX62
-R1
 R2
 R3
 R4
 R5
 R6
 R7
+R8
 Z21 DEx4 work 5 cache 0 22 giJDUQJVz7?T=j_ne=i7a2
 l71
 L36
@@ -61,13 +61,13 @@ R15
 R16
 R17
 Abypass
-R1
 R2
 R3
 R4
 R5
 R6
 R7
+R8
 R21
 l31
 L26
@@ -84,11 +84,11 @@ R15
 R16
 R17
 Pcache_pkg
-R2
-R6
+R3
 R7
-w1624964027
 R8
+w1624958834
+R0
 8../../vhdl/cache/cache_pkg.vhd
 F../../vhdl/cache/cache_pkg.vhd
 l0
@@ -97,23 +97,23 @@ VdeGoA_UX;dk@?<ZTJ=D<50
 !s100 a1faI00:NSPHeT8;EBo:i2
 R11
 33
-R12
+Z22 !s110 1625040807
 !i10b 1
-Z22 !s108 1624982512.000000
+Z23 !s108 1625040807.000000
 !s90 -work|work|-2008|../../vhdl/cache/cache_pkg.vhd|
 !s107 ../../vhdl/cache/cache_pkg.vhd|
 !i113 1
 R16
 R17
 Pcore_pkg
-R2
-R5
+R3
 R6
 R7
-Z23 w1622723272
 R8
-Z24 8../../vhdl/core_pkg.vhd
-Z25 F../../vhdl/core_pkg.vhd
+Z24 w1622725016
+R0
+Z25 8../../vhdl/core_pkg.vhd
+Z26 F../../vhdl/core_pkg.vhd
 l0
 L7
 VH;f7VzgK;h=0Jn_ajzFBP0
@@ -121,67 +121,67 @@ VH;f7VzgK;h=0Jn_ajzFBP0
 R11
 33
 b1
-Z26 !s110 1624982512
+Z27 !s110 1625040806
 !i10b 1
-R22
-Z27 !s90 -work|work|-2008|../../vhdl/core_pkg.vhd|
-Z28 !s107 ../../vhdl/core_pkg.vhd|
+Z28 !s108 1625040806.000000
+Z29 !s90 -work|work|-2008|../../vhdl/core_pkg.vhd|
+Z30 !s107 ../../vhdl/core_pkg.vhd|
 !i113 1
 R16
 R17
 Bbody
-Z29 DPx4 work 8 core_pkg 0 22 H;f7VzgK;h=0Jn_ajzFBP0
-R2
-R5
+Z31 DPx4 work 8 core_pkg 0 22 H;f7VzgK;h=0Jn_ajzFBP0
+R3
 R6
 R7
+R8
 l0
 L41
 Vh=?FYnH5g4Ug:z7Ch1M>L0
 !s100 J<jZ^jb:UN5aEMaT6@>Mk1
 R11
 33
-R26
-!i10b 1
-R22
 R27
+!i10b 1
 R28
+R29
+R30
 !i113 1
 R16
 R17
 Edata_st
-Z30 w1624973881
+Z32 w1624980410
 R18
-R1
 R2
-R5
+R3
 R6
 R7
 R8
-Z31 8../../vhdl/cache/data_st.vhd
-Z32 F../../vhdl/cache/data_st.vhd
+R0
+Z33 8../../vhdl/cache/data_st.vhd
+Z34 F../../vhdl/cache/data_st.vhd
 l0
 L9
 VS06lQzj4PTjWz:68Q;2@c0
 !s100 ]42R66GLg6?Y>74<LCeHm3
 R11
 33
-R12
+R22
 !i10b 1
-R13
-Z33 !s90 -work|work|-2008|../../vhdl/cache/data_st.vhd|
-Z34 !s107 ../../vhdl/cache/data_st.vhd|
+R23
+Z35 !s90 -work|work|-2008|../../vhdl/cache/data_st.vhd|
+Z36 !s107 ../../vhdl/cache/data_st.vhd|
 !i113 1
 R16
 R17
 Aimpl
-Z35 DEx4 work 10 data_st_1w 0 22 hfFz7Tl<o:50z>XiS4[JI2
+Z37 DEx4 work 10 data_st_1w 0 22 hfFz7Tl<o:50z>XiS4[JI2
 R18
-R1
 R2
-R5
+R3
 R6
 R7
+R8
 R19
 l29
 L28
@@ -189,69 +189,69 @@ V5WU1QznCSB:TLc]5d[NmP0
 !s100 8S7[b[>@kF1<6]UGIbPW_1
 R11
 33
-R12
+R22
 !i10b 1
-R13
-R33
-R34
+R23
+R35
+R36
 !i113 1
 R16
 R17
 Edata_st_1w
-Z36 w1624976882
+R32
 R18
-R1
 R2
-R5
+R3
 R6
 R7
 R8
-Z37 8../../vhdl/cache/data_st_1w.vhd
-Z38 F../../vhdl/cache/data_st_1w.vhd
+R0
+Z38 8../../vhdl/cache/data_st_1w.vhd
+Z39 F../../vhdl/cache/data_st_1w.vhd
 l0
 L9
 VhfFz7Tl<o:50z>XiS4[JI2
 !s100 l`d?K]DY@gn6<[aMdSJ780
 R11
 33
-R12
+R22
 !i10b 1
-R13
-Z39 !s90 -work|work|-2008|../../vhdl/cache/data_st_1w.vhd|
-Z40 !s107 ../../vhdl/cache/data_st_1w.vhd|
+R23
+Z40 !s90 -work|work|-2008|../../vhdl/cache/data_st_1w.vhd|
+Z41 !s107 ../../vhdl/cache/data_st_1w.vhd|
 !i113 1
 R16
 R17
 Aimpl
-Z41 DEx4 work 19 single_clock_rw_ram 0 22 =TPLIWD4hn2RNidia2ejc2
+Z42 DEx4 work 19 single_clock_rw_ram 0 22 =TPLIWD4hn2RNidia2ejc2
 R18
-R1
 R2
-R5
+R3
 R6
 R7
-R35
+R8
+R37
 l27
 L26
 V1RRbXn55V]P1P_><iA[Vd3
 !s100 X:Qmd]XeSe@eQJNa2c;Me2
 R11
 33
-R12
+R22
 !i10b 1
-R13
-R39
+R23
 R40
+R41
 !i113 1
 R16
 R17
 Pmem_pkg
-R6
 R7
-Z42 w1624864846
 R8
-Z43 8../../vhdl/mem_pkg.vhd
-Z44 F../../vhdl/mem_pkg.vhd
+Z43 w1624819955
+R0
+Z44 8../../vhdl/mem_pkg.vhd
+Z45 F../../vhdl/mem_pkg.vhd
 l0
 L4
 VKeT]cYo]@i?UePYnWej0D0
@@ -259,35 +259,34 @@ VKeT]cYo]@i?UePYnWej0D0
 R11
 33
 b1
-R26
+R27
 !i10b 1
-R22
-Z45 !s90 -work|work|-2008|../../vhdl/mem_pkg.vhd|
-Z46 !s107 ../../vhdl/mem_pkg.vhd|
+R28
+Z46 !s90 -work|work|-2008|../../vhdl/mem_pkg.vhd|
+Z47 !s107 ../../vhdl/mem_pkg.vhd|
 !i113 1
 R16
 R17
 Bbody
-R2
-R6
+R3
 R7
+R8
 l0
 L74
 VAEDgah9b7[eJWBA<6n31=2
 !s100 hSGO^<l]k^1VhH14oSIP62
 R11
 33
-R26
+R27
 !i10b 1
-R22
-R45
+R28
 R46
+R47
 !i113 1
 R16
 R17
 Emgmt_st
-Z47 w1624979995
-R1
+R32
 R2
 R3
 R4
@@ -295,6 +294,7 @@ R5
 R6
 R7
 R8
+R0
 Z48 8../../vhdl/cache/mgmt_st.vhd
 Z49 F../../vhdl/cache/mgmt_st.vhd
 l0
@@ -313,13 +313,13 @@ R16
 R17
 Aimpl
 Z52 DEx4 work 10 mgmt_st_1w 0 22 Jm>@o2626Yf=G37^_S;H13
-R1
 R2
 R3
 R4
 R5
 R6
 R7
+R8
 R20
 l38
 L33
@@ -336,15 +336,15 @@ R51
 R16
 R17
 Emgmt_st_1w
-Z53 w1624978407
-R1
+R32
 R2
-R5
+R3
 R6
 R7
 R8
-Z54 8../../vhdl/cache/mgmt_st_1w.vhd
-Z55 F../../vhdl/cache/mgmt_st_1w.vhd
+R0
+Z53 8../../vhdl/cache/mgmt_st_1w.vhd
+Z54 F../../vhdl/cache/mgmt_st_1w.vhd
 l0
 L8
 VJm>@o2626Yf=G37^_S;H13
@@ -353,18 +353,18 @@ R11
 33
 R12
 !i10b 1
-R13
-Z56 !s90 -work|work|-2008|../../vhdl/cache/mgmt_st_1w.vhd|
-Z57 !s107 ../../vhdl/cache/mgmt_st_1w.vhd|
+R23
+Z55 !s90 -work|work|-2008|../../vhdl/cache/mgmt_st_1w.vhd|
+Z56 !s107 ../../vhdl/cache/mgmt_st_1w.vhd|
 !i113 1
 R16
 R17
 Aimpl
-R1
 R2
-R5
+R3
 R6
 R7
+R8
 R52
 l28
 L25
@@ -374,20 +374,20 @@ R11
 33
 R12
 !i10b 1
-R13
+R23
+R55
 R56
-R57
 !i113 1
 R16
 R17
 Pop_pkg
-R2
-R5
-R29
+R3
 R6
+R31
 R7
-w1622381970
 R8
+w1622301472
+R0
 8../../vhdl/op_pkg.vhd
 F../../vhdl/op_pkg.vhd
 l0
@@ -396,61 +396,61 @@ VMZ>0BgR@bChNo[_5PMT@E3
 !s100 <BWoTe:lzXW8oGI@M^ke71
 R11
 33
-R26
-!i10b 1
 R22
+!i10b 1
+R28
 !s90 -work|work|-2008|../../vhdl/op_pkg.vhd|
 !s107 ../../vhdl/op_pkg.vhd|
 !i113 1
 R16
 R17
 Esingle_clock_rw_ram
-Z58 w1620414201
-R5
+Z57 w1620823419
 R6
 R7
 R8
-Z59 8../../vhdl/cache/ram/single_clock_rw_ram.vhd
-Z60 F../../vhdl/cache/ram/single_clock_rw_ram.vhd
+R0
+Z58 8../../vhdl/cache/ram/single_clock_rw_ram.vhd
+Z59 F../../vhdl/cache/ram/single_clock_rw_ram.vhd
 l0
 L8
 V=TPLIWD4hn2RNidia2ejc2
 !s100 fQ^OHUj9Uz5ARVW[X=<142
 R11
 33
-R12
+R22
 !i10b 1
-R13
-Z61 !s90 -work|work|-2008|../../vhdl/cache/ram/single_clock_rw_ram.vhd|
-Z62 !s107 ../../vhdl/cache/ram/single_clock_rw_ram.vhd|
+R23
+Z60 !s90 -work|work|-2008|../../vhdl/cache/ram/single_clock_rw_ram.vhd|
+Z61 !s107 ../../vhdl/cache/ram/single_clock_rw_ram.vhd|
 !i113 1
 R16
 R17
 Artl
-R5
 R6
 R7
-R41
+R8
+R42
 l27
 L23
 V<8SfFzHL?E1H]i1H9_ZF@1
 !s100 GaQfA[?Vn1cJzDORAk[a23
 R11
 33
-R12
+R22
 !i10b 1
-R13
+R23
+R60
 R61
-R62
 !i113 1
 R16
 R17
 Psingle_clock_rw_ram_pkg
-R5
 R6
 R7
-R58
 R8
+R57
+R0
 8../../vhdl/cache/ram/single_clock_rw_ram_pkg.vhd
 F../../vhdl/cache/ram/single_clock_rw_ram_pkg.vhd
 l0
@@ -459,28 +459,28 @@ VSSPU:PCSL0;_::gUf=oAJ3
 !s100 [DT8R1eKe[K_aE59okTj]1
 R11
 33
-R12
+R22
 !i10b 1
-R13
+R23
 !s90 -work|work|-2008|../../vhdl/cache/ram/single_clock_rw_ram_pkg.vhd|
 !s107 ../../vhdl/cache/ram/single_clock_rw_ram_pkg.vhd|
 !i113 1
 R16
 R17
 Etb
-Z63 w1624982341
-R29
-Z64 DPx4 work 6 op_pkg 0 22 MZ>0BgR@bChNo[_5PMT@E3
-Z65 DPx4 ieee 16 std_logic_textio 0 22 V5TSK`;aJKC<l]CEg1>mz1
-Z66 DPx4 work 11 tb_util_pkg 0 22 CLLVzBDCaTPa42aX^c7A22
-R1
+Z62 w1625040801
+R31
+Z63 DPx4 work 6 op_pkg 0 22 MZ>0BgR@bChNo[_5PMT@E3
+Z64 DPx4 ieee 16 std_logic_textio 0 22 V5TSK`;aJKC<l]CEg1>mz1
+Z65 DPx4 work 11 tb_util_pkg 0 22 CLLVzBDCaTPa42aX^c7A22
 R2
-R5
+R3
 R6
 R7
 R8
-Z67 8tb/cache_tb.vhd
-Z68 Ftb/cache_tb.vhd
+R0
+Z66 8tb/cache_tb.vhd
+Z67 Ftb/cache_tb.vhd
 l0
 L9
 V8cjgVF<a[`QWVcR?iV5C@2
@@ -490,51 +490,51 @@ R11
 R12
 !i10b 1
 R13
-Z69 !s90 -work|work|-2008|tb/cache_tb.vhd|
-Z70 !s107 tb/cache_tb.vhd|
+Z68 !s90 -work|work|-2008|tb/cache_tb.vhd|
+Z69 !s107 tb/cache_tb.vhd|
 !i113 1
 R16
 R17
 Abench
-R3
 R4
+R5
 R21
-R29
+R31
+R63
 R64
 R65
-R66
-R1
 R2
-R5
+R3
 R6
 R7
-Z71 DEx4 work 2 tb 0 22 8cjgVF<a[`QWVcR?iV5C@2
+R8
+Z70 DEx4 work 2 tb 0 22 8cjgVF<a[`QWVcR?iV5C@2
 l23
 L12
-Z72 VYz]ZVcHdRh54<WUOeE>CH2
-Z73 !s100 U27^`CZOKTc2>_52Y<Lh`2
+VB?0]So1Wzb8_YlIjcFb:R0
+!s100 ibmR@JXPKT3z5EW8`L?ZF3
 R11
 33
 R12
 !i10b 1
 R13
+R68
 R69
-R70
 !i113 1
 R16
 R17
 Ptb_util_pkg
-R2
-R29
+R3
+R31
+R63
 R64
-R65
-R5
 R6
 R7
-Z74 w1624964023
 R8
-Z75 8../tb_util_pkg.vhd
-Z76 F../tb_util_pkg.vhd
+R57
+R0
+Z71 8../tb_util_pkg.vhd
+Z72 F../tb_util_pkg.vhd
 l0
 L12
 VCLLVzBDCaTPa42aX^c7A22
@@ -545,20 +545,20 @@ b1
 R12
 !i10b 1
 R13
-Z77 !s90 -work|work|-2008|../tb_util_pkg.vhd|
-Z78 !s107 ../tb_util_pkg.vhd|
+Z73 !s90 -work|work|-2008|../tb_util_pkg.vhd|
+Z74 !s107 ../tb_util_pkg.vhd|
 !i113 1
 R16
 R17
 Bbody
-R66
-R2
-R29
-R64
 R65
-R5
+R3
+R31
+R63
+R64
 R6
 R7
+R8
 l0
 L50
 VzJ<g;0obPKmOZ8;n50oe11
@@ -568,8 +568,8 @@ R11
 R12
 !i10b 1
 R13
-R77
-R78
+R73
+R74
 !i113 1
 R16
 R17

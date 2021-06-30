@@ -55,7 +55,9 @@ begin
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
-		
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD);
+		mem_to_cache.rddata <= (others => 'X');
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
@@ -63,7 +65,9 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
-		
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD);
+		mem_to_cache.rddata <= (others => 'X');
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
@@ -71,6 +75,9 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD);
+		mem_to_cache.rddata <= (others => 'X');
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.wr <= '1';
@@ -86,6 +93,9 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD);
+		mem_to_cache.rddata <= (others => 'X');
 		
 		timeout(3, CLK_PERIOD);
 		cpu_to_cache.rd <= '1';
@@ -93,6 +103,9 @@ begin
 		wait until falling_edge(cache_to_cpu.busy);
 		cpu_to_cache.rd <= '0';
 		cpu_to_cache.address <= (others => 'X');
+		mem_to_cache.rddata <= 32x"12345678";
+		timeout(1, CLK_PERIOD);
+		mem_to_cache.rddata <= (others => 'X');
 		
 		wait for 10*CLK_PERIOD;
 		stop <= true;
