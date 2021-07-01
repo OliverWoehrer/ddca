@@ -44,11 +44,11 @@ architecture rtl of ctrl is
 	signal flush_pipeline_s : std_logic := '0';
 begin
 	--Permanent Hardwires for stall signal:
-	stall_fetch <= stall_fetch_s or stall;
-	stall_dec <= stall_dec_s or stall;
-	stall_exec <= stall_exec_s or stall;
-	stall_mem <= stall_mem_s or stall;
-	stall_wb <= stall_wb_s or stall;
+	stall_fetch <= stall_fetch_s;
+	stall_dec <= stall_dec_s;
+	stall_exec <= stall_exec_s;
+	stall_mem <= stall_mem_s;
+	stall_wb <= stall_wb_s;
 	
 	
 	--Sync stall logic:
@@ -60,18 +60,24 @@ begin
 			stall_exec_s <= '0';
 			stall_mem_s <= '0';
 			stall_wb_s <= '0';
+		elsif (stall = '1') then --stall hole pipeline
+			stall_fetch_s <= '1';
+			stall_dec_s <= '1';
+			stall_exec_s <= '1';
+			stall_mem_s <= '1'; 
+			stall_wb_s <= '1';
 		elsif (exec_op_dec.rs1 = wb_op_exec.rd or exec_op_dec.rs2 = wb_op_exec.rd) and wb_op_exec.write = '1' and wb_op_exec.rd /= ZERO_REG then
 			stall_fetch_s <= '1';
 			stall_dec_s <= '1';
 			stall_exec_s <= '0';
 			stall_mem_s <= '0'; 
-			stall_wb_s <= '0'; -- dont stall wb stage
+			stall_wb_s <= '0';
 		else
 			stall_fetch_s <= '0';
 			stall_dec_s <= '0';
 			stall_exec_s <= '0';
 			stall_mem_s <= '0';
-			stall_wb_s <= '0';	
+			stall_wb_s <= '0';
 		end if;
 	end process;
 	

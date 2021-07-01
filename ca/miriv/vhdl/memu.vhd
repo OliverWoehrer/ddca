@@ -27,48 +27,54 @@ end entity;
 architecture rtl of memu is
 begin
 	M.address <= A(15 downto 2);
-	B <= '1' when (D.busy = '1') or (op.memread = '1' and XL <= '1') else '0';
+	--B <= '1' when (D.busy = '1') or (op.memread = '1' and XL = '0') else '0';
+	--B <= '1' when (D.busy = '1' and XL = '0') or (op.memread = '1' and XL = '0') else '0';
+	B <= '1' when (XL = '0') and (D.busy = '1' or M.rd = '1') else '0';
+	
+	
+	
 	store_excep: process(all)
 	begin
+		XS <= '0';
+		M.wr <= op.memwrite;
 		if op.memwrite = '1' then
 			case op.memtype is
 			when MEM_H | MEM_HU =>
 				if A(1 downto 0) = "01" or A(1 downto 0) = "11" then
 					XS <= '1';
 					M.wr <= '0';
-					XL <= '1';
-					M.rd <= '0';
-				else
-					XS <= '0';
-					M.wr <= op.memwrite;
-					XL <= '0';
-					M.rd <= op.memread;
 				end if;
 			when MEM_W =>
-				if A(1 downto 0) = "00" then
-					XS <= '0';
-					M.wr <= op.memwrite;
-					XL <= '0';
-					M.rd <= op.memread;
-				else 
+				if (A(1 downto 0) /= "00") then
 					XS <= '1';
-					M.wr <= '0';
+					M.wr <= '0';				
+				end if;
+			when others =>
+				-- no store exeception
+			end case;
+		end if;
+	end process;
+	
+	load_excep: process(all)
+	begin
+		XL <= '0';
+		M.rd <= op.memread;
+		if op.memread = '1' then
+			case op.memtype is
+			when MEM_H | MEM_HU =>
+				if A(1 downto 0) = "01" or A(1 downto 0) = "11" then
+					XL <= '1';
+					M.rd <= '0';
+				end if;
+			when MEM_W =>
+				if (A(1 downto 0) /= "00") then
 					XL <= '1';
 					M.rd <= '0';
 				end if;
 			when others =>
-				XS <= '0';
-				M.wr <= op.memwrite;
-				XL <= '0';
-				M.rd <= op.memread;
+				-- no store exeception
 			end case;
-		else
-			XS <= '0';
-			M.wr <= op.memwrite;
-			XL <= '0';
-			M.rd <= op.memread;
 		end if;
-	
 	end process;
 	
 	write_logic: process(all)

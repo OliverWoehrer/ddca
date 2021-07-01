@@ -133,6 +133,7 @@ begin
 				end if;
 				
 			when READ_CACHE =>
+				cache_to_cpu.busy <= '1';
 				if mgmt_st_hit_out_s = '1' and cpu_to_cache.rd = '0' then
 					cache_to_cpu.rddata <= data_st_data_out_s;
 					state_next <= IDLE;
@@ -141,7 +142,6 @@ begin
 					state_next <= READ_CACHE;
 				else
 					--miss
-					cache_to_cpu.busy <= '1';
 					if mgmt_st_dirty_out_s = '1' then
 						state_next <= WRITE_BACK_START;
 					else
@@ -157,6 +157,7 @@ begin
 				
 			when READ_MEM =>
 				cache_to_cpu <= mem_to_cache;
+				cache_to_cpu.busy <= '1'; --safety busy
 				if mem_to_cache.busy = '1' then
 					state_next <= READ_MEM;
 				else
@@ -182,8 +183,8 @@ begin
 				state_next <= WRITE_BACK;
 				
 			when WRITE_BACK =>
+				cache_to_cpu <= mem_to_cache; --change when mem used
 				cache_to_cpu.busy <= '1'; --safety busy for tb
-				--cache_to_cpu <= mem_to_cache; change when mem used
 				if mem_to_cache.busy = '1' then
 					state_next <= WRITE_BACK;
 				else
