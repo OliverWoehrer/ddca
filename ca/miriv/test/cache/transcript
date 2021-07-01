@@ -1,10 +1,10 @@
 # vsim -t ps work.tb -quiet -do "do scripts/wave.do;run -all;wave zoom full" 
-# Start time: 15:16:04 on Jun 30,2021
+# Start time: 16:39:22 on Jul 01,2021
 # do scripts/wave.do
 # run -all
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 0 ps  Iteration: 1  Instance: /tb/cache_inst/mgmt_st_inst/mgmt_st_1w_inst
 # wave zoom full
 # {0 ps} {1239 ns}
-# End time: 15:18:35 on Jun 30,2021, Elapsed time: 0:02:31
+# End time: 18:22:57 on Jul 01,2021, Elapsed time: 1:43:35
 # Errors: 0, Warnings: 1

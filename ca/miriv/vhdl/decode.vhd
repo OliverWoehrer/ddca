@@ -191,12 +191,13 @@ architecture rtl of decode is
 	
 begin
 	--Permanent Hardwires:
-	opcode	<= instr_s(6 downto 0);
-	funct7 	<= instr_s(31 downto 25);
-	funct3 	<= instr_s(14 downto 12);
-	exec_op.rs1 <= instr_s(19 downto 15);
-	exec_op.rs2 <= instr_s(24 downto 20);
-	wb_op.rd <= instr_s(11 downto 7);
+	instr_s <= instr;
+	opcode	<= instr(6 downto 0);
+	funct7 	<= instr(31 downto 25);
+	funct3 	<= instr(14 downto 12);
+	exec_op.rs1 <= instr(19 downto 15);
+	exec_op.rs2 <= instr(24 downto 20);
+	wb_op.rd <= instr(11 downto 7);
 	pc_out <= pc_s;
 
 	
@@ -206,8 +207,8 @@ begin
 		clk			=> clk,              
 		res_n       => res_n,
 		stall  		=> stall,          
-		rdaddr1		=> instr_s(19 downto 15),
-		rdaddr2 		=> instr_s(24 downto 20),
+		rdaddr1		=> instr(19 downto 15),
+		rdaddr2 		=> instr(24 downto 20),
 		rddata1		=> exec_op.readdata1,
 		rddata2 		=> exec_op.readdata2,
 		wraddr		=> reg_write.reg,         
@@ -221,12 +222,9 @@ begin
 	begin
 		wait until rising_edge(clk);
 		if res_n = '0' then
-			instr_s <= NOP_INST;
 			pc_s <= ZERO_PC;
 		elsif flush = '1' then
-			instr_s <= NOP_INST;
 		elsif stall = '0' then
-			instr_s <= instr;
 			pc_s <= pc_in;
 		else
 			-- keep old register values
@@ -249,7 +247,7 @@ begin
 		case opcode is
 			when OPC_LUI =>
 				--format U
-				exec_op.imm <= imm_from_inst_format_U(instr_s);
+				exec_op.imm <= imm_from_inst_format_U(instr);
 				exec_op.aluop <= ALU_NOP; -- required !! ALU return B
 				exec_op.alusrc2 <= '1';
 				wb_op.write <= '1';
@@ -257,7 +255,7 @@ begin
 				
 			when OPC_AUIPIC =>
 				--format U
-				exec_op.imm <= imm_from_inst_format_U(instr_s);
+				exec_op.imm <= imm_from_inst_format_U(instr);
 				exec_op.aluop <= ALU_ADD;
 				exec_op.alusrc1 <= '1';
 				exec_op.alusrc2 <= '1';
@@ -266,7 +264,7 @@ begin
 				
 			when OPC_JAL =>
 				--format J
-				exec_op.imm <= imm_from_inst_format_J(instr_s);
+				exec_op.imm <= imm_from_inst_format_J(instr);
 				exec_op.aluop <= ALU_ADD;
 				mem_op.branch <= BR_BR;
 				exec_op.alusrc1 <= '1';
@@ -276,7 +274,7 @@ begin
 				
 			when OPC_JALR =>
 				--format I
-				exec_op.imm <= imm_from_inst_format_I(instr_s);
+				exec_op.imm <= imm_from_inst_format_I(instr);
 				exec_op.aluop <= ALU_ADD; --funct3 = "000"
 				mem_op.branch <= BR_BR;
 				exec_op.alusrc2 <= '1';
@@ -286,7 +284,7 @@ begin
 				
 			when OPC_BRANCH =>
 				--format B
-				exec_op.imm <= imm_from_inst_format_B(instr_s);
+				exec_op.imm <= imm_from_inst_format_B(instr);
 				exec_op.aluop <= alu_op_for_BRANCH(funct3);
 				if funct3(0) = '0' then
 					mem_op.branch <= BR_CND;
@@ -299,7 +297,7 @@ begin
 				
 			when OPC_LOAD =>
 				--format I
-				exec_op.imm <= imm_from_inst_format_I(instr_s);
+				exec_op.imm <= imm_from_inst_format_I(instr);
 				exec_op.aluop <= ALU_ADD;
 				exec_op.alusrc2 <= '1';
 				mem_op.mem.memread <= '1';
@@ -309,7 +307,7 @@ begin
 			
 			when OPC_STORE =>
 				--format S
-				exec_op.imm <= imm_from_inst_format_S(instr_s);
+				exec_op.imm <= imm_from_inst_format_S(instr);
 				exec_op.aluop <= ALU_ADD;
 				exec_op.alusrc2 <= '1';
 				mem_op.mem.memwrite <= '1';
@@ -320,11 +318,11 @@ begin
 			when OPC_OP_IMM =>
 				--format I
 				if funct3 = "001" or funct3 = "101" then
-					exec_op.imm <= shamt_from_inst_format_I(instr_s);
+					exec_op.imm <= shamt_from_inst_format_I(instr);
 				else
-					exec_op.imm <= imm_from_inst_format_I(instr_s);
+					exec_op.imm <= imm_from_inst_format_I(instr);
 				end if;
-				exec_op.aluop <= alu_op_for_OP_IMM(funct3,instr_s(30));
+				exec_op.aluop <= alu_op_for_OP_IMM(funct3,instr(30));
 				exec_op.alusrc2 <= '1';
 				wb_op.write <= '1';
 				wb_op.src <= WBS_ALU;
@@ -338,7 +336,7 @@ begin
 				
 			when OPC_NOP =>
 				--format I
-				exec_op.imm <= imm_from_inst_format_I(instr_s);
+				exec_op.imm <= imm_from_inst_format_I(instr);
 				wb_op.write <= '0';
 				wb_op.src <= WBS_ALU;
 				

@@ -82,7 +82,6 @@ begin
 				end if;
 			else -- unit is stalled, store imem data in register
 				stall_flag <= '1';
-				instr_s <= mem_in.rddata;
 			end if;
 		end if;
 	end process;
